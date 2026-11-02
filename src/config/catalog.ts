@@ -4,7 +4,7 @@
  * Prices and URLs were taken from the current Wix sites (Nov 2026) — CONFIRM with the owner before launch.
  * `price: null` hides the price; `href: null` turns the button into "Call to book".
  *
- * Acuity links are rewritten to the in-house booking preview (`/book?service=<key>`, see
+ * Acuity links are rewritten to the in-house booking preview (`/book.html?service=<key>`, see
  * src/config/booking.ts). The original Acuity URL is kept as `legacyHref` for reference.
  */
 
@@ -91,7 +91,7 @@ const isAcuity = (href: string | null) => !!href && (href.startsWith('https://ap
 export const catalog = Object.fromEntries(
   Object.entries(raw).map(([key, v]) =>
     typeof v === 'object' && isAcuity(v.href)
-      ? [key, { ...v, href: `/book?service=${key}`, ...(v.href!.startsWith('https') && { legacyHref: v.href }) }]
+      ? [key, { ...v, href: `/book.html?service=${key}`, ...(v.href!.startsWith('https') && { legacyHref: v.href }) }]
       : [key, v],
   ),
 ) as typeof raw;

@@ -1,6 +1,6 @@
 # NP Certification Academy — website
 
-Site rebuild ("Option 1 — Clinical Navy"): homepage plus 11 inner pages. Astro + Tailwind, static output, served by a Cloudflare Worker that also handles the free-trial form and the 301s from the old Wix URLs.
+Site rebuild ("Option 1 — Clinical Navy"): homepage plus 11 inner pages. Astro + Tailwind, static output, **hosted on Wix** (Wix Headless static hosting). The free-trial form is a Wix Form. The previous Cloudflare Worker host (`worker/`, `wrangler.jsonc`) is kept running as a fallback until the domain moves; see [Cloudflare (legacy)](#cloudflare-legacy).
 
 Design source and requirements: [`reference/`](reference/) — `CLAUDE_CODE_HANDOVER_1.md` (current) and `option-1-pages/` (one design file per page).
 
@@ -19,11 +19,18 @@ Design source and requirements: [`reference/`](reference/) — `CLAUDE_CODE_HAND
 |---|---|
 | `npm run dev` | Astro dev server (page only; the form API isn't available) |
 | `npm run preview` | Build + run the real Worker locally at http://localhost:8787 (page + form API) |
-| `npm run deploy` | Build + deploy to Cloudflare |
+| `npm run deploy:wix` | Build + publish to Wix (replaces the whole site) |
+| `npm run deploy` | Build + deploy to the legacy Cloudflare Worker |
 
 ### Deploys
 
-There's no CI: after committing to `main`, deploy from your machine with `npm run deploy` (`npx wrangler login` once first).
+There's no CI: after committing to `main`, publish from your machine with `npm run deploy:wix`. One-time login first: `npx -y -p node@24 -p @wix/cli@latest wix login` (the Wix CLI needs Node ≥ 24.18; `-p node@24` fetches one just for that command).
+
+- Live (Wix): https://headless-azxstdgmuwo-favoreddigital01-1410.wix-site-host.com
+- Dashboard: https://manage.wix.com/dashboard/7a561b7f-d690-4984-b863-cef071dc9fbd
+- Site ID `7a561b7f-d690-4984-b863-cef071dc9fbd`, OAuth client (appId) `7f79c315-340c-4b4b-aed3-341d86877dad`
+
+**Wix static hosting serves exact file paths only.** `/pmhnp` is a 404; `/pmhnp.html` works. So every internal link, canonical tag and sitemap URL carries `.html` (see `routes` in `src/config/site.ts`). The host also has no server-side redirects and drops files without an extension, so the old-Wix-URL 301s in `worker/redirects.ts` do **not** work on Wix yet (see the launch checklist).
 
 ## Editing content
 
@@ -50,21 +57,30 @@ Every booking button that used to go to Acuity now opens `/book?service=<key>`, 
 
 ## Free-trial form
 
-`POST /api/trial` (see [`worker/index.ts`](worker/index.ts)) validates the input, silently drops honeypot hits, and stores each lead in the `LEADS` KV namespace.
+A **Wix Form** ("Free trial class"). The page renders whatever fields the form has in the Wix dashboard, so the owner can rename, reorder, add or require fields, or change the thank-you text, with no code change. Values, validation (in Wix's wording) and the submission run through Wix's browser modules, vendored in [`public/js/wix/`](public/js/wix/). The page code is [`public/js/trial-form.js`](public/js/trial-form.js). Submissions also create or update a CRM contact from the email.
 
-- **Forward to an email platform/CRM:** `npx wrangler secret put LEAD_WEBHOOK_URL` (e.g. a Zapier/Make/Mailchimp hook). Each lead is POSTed as JSON: `{email, exam, month, submittedAt, country, referer}`.
-- **Download leads as CSV:** `npx wrangler secret put ADMIN_TOKEN`, then
-  `curl -H "Authorization: Bearer $TOKEN" https://<site>/api/leads -o leads.csv`
+- Edit the form: https://manage.wix.com/dashboard/7a561b7f-d690-4984-b863-cef071dc9fbd/wix-forms/form/f0bb3fe9-0eeb-4cbe-bd72-20370eeab101
+- Submissions (export to CSV there): …/wix-forms/form/f0bb3fe9-0eeb-4cbe-bd72-20370eeab101/submissions
+- Email notifications, automations, spam protection: Wix dashboard → Forms / Automations
+- The form ID is `wix.trialFormId` in `src/config/site.ts`
+
+The target-exam field is now a date (Wix Forms has no month picker); "a rough date is fine" is its help text.
 
 ## Analytics
 
 Clicks on elements with `data-track` push events to `window.dataLayer` (GTM/GA4) and Cloudflare Zaraz if present: `cta_click`, `exam_card_click`, `checkout_start`, `tel_click`, `trial_form_submit`. Add GTM or turn on Zaraz to collect them; nothing is sent until one is installed.
 
+## Cloudflare (legacy)
+
+`worker/` + `wrangler.jsonc` are the previous host: static assets, `POST /api/trial` → KV, `GET /api/leads` CSV, and the old-Wix-URL 301s. It's still deployed with the pre-Wix build and is **not** updated by `deploy:wix`. Don't run `npm run deploy` with the current code: the form now posts to Wix, which only accepts the Wix origin. Remove `worker/`, `wrangler.jsonc` and the KV namespace once the domain serves from Wix.
+
 ## Launch checklist (not done yet)
 
 - [ ] Owner content in `site.ts` (see above); confirm contact details and `CONFIRM` links
-- [ ] Decide the lead destination (`LEAD_WEBHOOK_URL`)
+- [ ] Turn on email notifications / an automation for the Wix trial form (dashboard → Automations)
+- [ ] Move any leads still in Cloudflare KV: `curl -H "Authorization: Bearer $TOKEN" https://<worker host>/api/leads -o leads.csv` (needs `ADMIN_TOKEN` set)
 - [ ] Owner answers for the site inconsistencies listed in the handover (PMHNP hours, AGACNP Fast Track length and domains, NCLEX Upgrade length, PMH-RN / Nurse Executive booking links)
 - [ ] Still missing: class times, book details, Q-bank prices, summit dates/prices/speakers/agenda, ONE:THREE price, CNE provider number
-- [ ] Point the custom domain at the Worker (old Wix URLs already 301 — see [`worker/redirects.ts`](worker/redirects.ts))
+- [ ] Connect the custom domain to the Wix site (dashboard → Domains), then add the domain to the OAuth app's allowed origins so the trial form can submit from it
+- [ ] Old Wix URL 301s ([`worker/redirects.ts`](worker/redirects.ts)): Wix SEO Redirects didn't take effect on the `wix-site-host.com` address. Re-test them once the domain is connected. If they still don't work, the site needs Wix's server-rendered Astro hosting (`@wix/astro` adapter), which can do redirects and clean URLs
 - [ ] Lighthouse run against the deployed URL

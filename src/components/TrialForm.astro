@@ -1,8 +1,6 @@
 ---
-import { links, trialExamOptions } from '../config/site';
+import { links, wix } from '../config/site';
 
-const inputCls =
-  'font-[inherit] text-base font-normal px-4 py-3.5 rounded-[10px] border border-input-border min-h-12 box-border bg-white text-ink w-full aria-[invalid=true]:border-[#E5484D] aria-[invalid=true]:outline-2 aria-[invalid=true]:outline-[#E5484D]';
 ---
 <section id="trial" class="section-y px-6">
   <div class="max-w-[1100px] mx-auto bg-ink text-white rounded-3xl p-[clamp(28px,5vw,56px)] flex flex-wrap gap-10 items-center on-dark">
@@ -13,33 +11,19 @@ const inputCls =
     </div>
 
     <div class="flex-[1_1_360px] min-w-0">
-      <form class="flex flex-col gap-3.5" action="/api/trial" method="post" novalidate data-trial-form>
-        <label class="flex flex-col gap-1.5 text-sm font-semibold">Email
-          <input class={inputCls} type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-describedby="err-email" />
-          <span id="err-email" class="text-[13px] font-medium text-[#FFB4B4]" data-error-for="email"></span>
-        </label>
-        <label class="flex flex-col gap-1.5 text-sm font-semibold">Exam you're preparing for
-          <select class={inputCls} name="exam" required aria-describedby="err-exam">
-            {trialExamOptions.map((o) => <option>{o}</option>)}
-          </select>
-          <span id="err-exam" class="text-[13px] font-medium text-[#FFB4B4]" data-error-for="exam"></span>
-        </label>
-        <label class="flex flex-col gap-1.5 text-sm font-semibold">Target exam month
-          <input class={inputCls} type="month" name="month" required aria-describedby="err-month" />
-          <span id="err-month" class="text-[13px] font-medium text-[#FFB4B4]" data-error-for="month"></span>
-        </label>
-        <!-- Honeypot: hidden from people, filled by bots -->
-        <div aria-hidden="true" class="absolute -left-[9999px] w-px h-px overflow-hidden">
-          <label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
-        </div>
+      <form class="flex flex-col gap-3.5" novalidate data-trial-form data-form-id={wix.trialFormId}>
+        <!-- Fields are rendered from the Wix Forms schema by /js/trial-form.js -->
+        <div class="flex flex-col gap-3.5 min-h-[260px]" data-fields></div>
+        <span class="text-[13px] font-medium text-[#FFB4B4]" data-form-error role="alert"></span>
         <button type="submit" class="btn btn-primary text-[17px] py-4 min-h-[52px] border-0 cursor-pointer font-[inherit] disabled:opacity-60">Send me the free class</button>
-        <span class="text-[13px] text-muted-on-dark" data-form-status role="status" aria-live="polite">We reply within 48 hours. No spam.</span>
+        <span class="text-[13px] text-muted-on-dark">We reply within 48 hours. No spam.</span>
       </form>
+      <script is:inline type="module" src="/js/trial-form.js"></script>
 
       <div class="hidden flex-col gap-3 bg-white/5 border border-white/15 rounded-2xl p-7" data-trial-success tabindex="-1">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5B544" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-        <p class="m-0 text-[22px] font-extrabold">You're on the list.</p>
-        <p class="m-0 text-base leading-relaxed text-muted-on-dark">We'll email you the next free class date and a sample lecture. We reply within 48 hours.</p>
+        <p class="m-0 text-[22px] font-extrabold" data-success-title>You're on the list.</p>
+        <div class="flex flex-col gap-2 text-base leading-relaxed text-muted-on-dark" data-success-body><p class="m-0">We'll email you the next free class date and a sample lecture. We reply within 48 hours.</p></div>
       </div>
     </div>
   </div>

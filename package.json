@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:wix": "bash scripts/deploy-wix.sh"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

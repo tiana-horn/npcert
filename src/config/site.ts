@@ -117,22 +117,26 @@ export const photos = {
   portrait: drKPhoto as Photo | null,
 };
 
-/** Internal routes (see reference/CLAUDE_CODE_HANDOVER_1.md §1b). */
+/**
+ * Internal routes (see reference/CLAUDE_CODE_HANDOVER_1.md §1b).
+ * Wix static hosting serves exact file paths only (`/pmhnp` is a 404, `/pmhnp.html` works), so
+ * every link carries the `.html`.
+ */
 export const routes = {
   home: '/',
-  pmhnp: '/pmhnp',
-  fnp: '/fnp-agnp',
-  agacnp: '/agacnp',
-  nclex: '/nclex-and-certifications',
-  lmr: '/last-minute-review',
-  qbank: '/question-banks',
-  schedule: '/schedule',
-  mentorship: '/mentorship-ceus',
-  books: '/books',
-  summit: '/summit-2026',
-  login: '/login',
-  confidentPrescriber: '/confident-prescriber',
-  book: '/book',
+  pmhnp: '/pmhnp.html',
+  fnp: '/fnp-agnp.html',
+  agacnp: '/agacnp.html',
+  nclex: '/nclex-and-certifications.html',
+  lmr: '/last-minute-review.html',
+  qbank: '/question-banks.html',
+  schedule: '/schedule.html',
+  mentorship: '/mentorship-ceus.html',
+  books: '/books.html',
+  summit: '/summit-2026.html',
+  login: '/login.html',
+  confidentPrescriber: '/confident-prescriber.html',
+  book: '/book.html',
 } as const;
 
 export type NavKey = 'home' | 'pmhnp' | 'fnp' | 'agacnp' | 'nclex' | 'lmr' | 'qbank' | 'schedule' | 'other';
@@ -160,7 +164,7 @@ export const links = {
   freeTrialFnp: 'https://www.signupgenius.com/go/10C0D4AA9AE29A0F4C52-62916546-free',
   sampleLecture: 'https://youtu.be/P4uZ6i2M938',
   whatsapp: 'https://chat.whatsapp.com/IJlEPutKiRHA3b7hVrrb24',
-  confidentPrescriber: '/confident-prescriber',
+  confidentPrescriber: routes.confidentPrescriber,
 };
 
 export const social = [
@@ -298,4 +302,12 @@ export const summit = {
   startDate: null as string | null,
 };
 
-export const trialExamOptions = ['PMHNP (ANCC / AANP)', 'FNP / AGNP', 'AGACNP', 'NCLEX RN / PN'];
+/**
+ * Wix hosting. The free-trial form's fields, thank-you text and submissions live in the Wix dashboard:
+ * https://manage.wix.com/dashboard/7a561b7f-d690-4984-b863-cef071dc9fbd/wix-forms
+ * (the public OAuth client id is in public/js/wix/config.js).
+ */
+export const wix = {
+  siteId: '7a561b7f-d690-4984-b863-cef071dc9fbd',
+  trialFormId: 'f0bb3fe9-0eeb-4cbe-bd72-20370eeab101',
+};

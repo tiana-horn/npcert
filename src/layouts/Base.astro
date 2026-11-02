@@ -17,7 +17,9 @@ interface Props {
   noindex?: boolean;
 }
 const { title = site.title, description = site.description, active, crumb, schema = [], noindex = false } = Astro.props;
-const canonical = new URL(Astro.url.pathname, site.url).toString();
+// Wix serves pages at their file path (`/pmhnp.html`), so that is the canonical URL.
+const slug = Astro.url.pathname.replace(/\.html$/, '').replace(/(\/index)?\/?$/, '');
+const canonical = new URL(slug ? `${slug}.html` : '/', site.url).toString();
 const ogImage = site.ogImage ? new URL(site.ogImage, site.url).toString() : null;
 const allSchema = [orgSchema(), ...(crumb ? [breadcrumbSchema(crumb, canonical)] : []), ...schema];
 ---

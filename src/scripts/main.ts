@@ -78,64 +78,7 @@ if (bar && heroEl) {
 }
 
 // ---------- Free-trial form ----------
-const form = document.querySelector<HTMLFormElement>('[data-trial-form]');
-const success = document.querySelector<HTMLElement>('[data-trial-success]');
-
-const messages: Record<string, (el: HTMLInputElement | HTMLSelectElement) => string> = {
-  email: (el) => (el.validity.valueMissing ? 'Enter your email.' : 'Enter a valid email, like you@example.com.'),
-  exam: () => 'Choose the exam you’re preparing for.',
-  month: () => 'Choose the month you plan to test.',
-};
-
-function validateField(el: HTMLInputElement | HTMLSelectElement): boolean {
-  const ok = el.checkValidity();
-  el.setAttribute('aria-invalid', String(!ok));
-  const msg = form!.querySelector<HTMLElement>(`[data-error-for="${el.name}"]`);
-  if (msg) msg.textContent = ok ? '' : messages[el.name]?.(el) ?? 'Required.';
-  return ok;
-}
-
-if (form && success) {
-  const fields = [...form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]')];
-  fields.forEach((el) => {
-    el.addEventListener('blur', () => el.value && validateField(el));
-    el.addEventListener('input', () => el.getAttribute('aria-invalid') === 'true' && validateField(el));
-  });
-
-  const status = form.querySelector<HTMLElement>('[data-form-status]')!;
-  const defaultStatus = status.textContent;
-  const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const invalid = fields.filter((el) => !validateField(el));
-    if (invalid.length) {
-      invalid[0].focus();
-      return;
-    }
-
-    const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
-    button.disabled = true;
-    status.textContent = 'Sending…';
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error(String(res.status));
-      track('trial_form_submit', { exam: data.exam, target_month: data.month });
-      form.hidden = true;
-      success.classList.replace('hidden', 'flex');
-      success.focus();
-    } catch {
-      status.textContent = `Something went wrong. Please try again, or email us at info@npcertificationacademy.com.`;
-      button.disabled = false;
-      return;
-    }
-    status.textContent = defaultStatus;
-  });
-}
+// Lives in /js/trial-form.js (Wix Forms).
 
 // ---------- Google reviews carousel ----------
 // Auto-advances every 7s; pauses on hover/focus, via the pause button, and never
