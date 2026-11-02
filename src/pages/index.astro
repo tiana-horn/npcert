@@ -1,19 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
 import TrialForm from '../components/TrialForm.astro';
+import ReviewCarousel from '../components/ReviewCarousel.astro';
 import Check from '../components/Check.astro';
 import {
-  site, hero, stats, photos, routes, exams, formats, testimonials, sisterOrgs, faqs, summit,
+  site, hero, stats, googleReviews, photos, routes, exams, formats, testimonials, sisterOrgs, faqs, summit,
 } from '../config/site';
 import { catalog } from '../config/catalog';
 import { homeSchema } from '../config/schema';
 
+const reviewCount = googleReviews.count.toLocaleString('en-US');
 const proof = [
   { value: stats.yearsExperience, label: 'clinical & teaching experience' },
+  googleReviews.rating
+    ? { value: `${googleReviews.rating}★`, label: `from ${reviewCount} Google reviews`, href: googleReviews.url }
+    : { value: reviewCount, label: 'Google reviews from students', href: googleReviews.url },
   stats.nursesTaught && { value: stats.nursesTaught, label: 'nurses & NPs taught' },
   stats.passRate && { value: stats.passRate.value, label: `first-attempt pass rate, ${stats.passRate.cohortYear} cohort*` },
   { value: '4 styles', label: 'visual, auditory, reading/writing, hands-on' },
-].filter(Boolean) as { value: string; label: string }[];
+].filter(Boolean) as { value: string; label: string; href?: string | null }[];
 
 const steps = [
   { n: '01', title: 'Join a live cohort', body: 'Two live Zoom classes a week with Dr. K. Ask questions in real time — live or hybrid schedule.' },
@@ -69,11 +74,16 @@ const visibleFaqs = faqs.filter((f) => f.a) as { q: string; a: string }[];
     <!-- Proof strip -->
     <section class="border-b border-divider" aria-label="At a glance">
       <div class="container-page py-9 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6">
-        {proof.map((p) => (
-          <div class="flex flex-col gap-1"><span class="text-[34px] font-extrabold text-teal">{p.value}</span><span class="text-[15px] text-body-muted">{p.label}</span></div>
-        ))}
+        {proof.map((p) => {
+          const inner = <><span class="text-[34px] font-extrabold text-teal">{p.value}</span><span class="text-[15px] text-body-muted">{p.label}</span></>;
+          return p.href
+            ? <a href={p.href} class="flex flex-col gap-1 no-underline hover:[&>span:last-child]:underline" rel="noopener">{inner}</a>
+            : <div class="flex flex-col gap-1">{inner}</div>;
+        })}
       </div>
     </section>
+
+    <ReviewCarousel />
 
     <!-- Exam picker -->
     <section id="exams" class="section-y px-6">

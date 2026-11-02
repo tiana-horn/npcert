@@ -1,0 +1,56 @@
+---
+import { googleReviews } from '../config/site';
+
+const { items, url, count } = googleReviews;
+---
+{items.length > 0 && (
+  <section class="bg-surface border-b border-divider px-6 py-12 md:py-14" aria-roledescription="carousel" aria-label="Google reviews from students" data-carousel>
+    <div class="max-w-[860px] mx-auto flex flex-col items-center gap-6 text-center">
+      <span class="flex items-center gap-2 text-sm font-bold text-teal-dark uppercase tracking-[0.06em]">
+        <span class="tracking-[0.1em] text-[#B7791F]" aria-hidden="true">★★★★★</span>
+        From our Google reviews
+      </span>
+
+      <div class="grid w-full" data-slides aria-live="off">
+        {items.map((r, i) => (
+          <figure
+            class="m-0 [grid-area:1/1] flex flex-col gap-4 items-center transition-opacity duration-500 data-[active=false]:opacity-0 data-[active=false]:pointer-events-none"
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} of ${items.length}`}
+            data-slide
+            data-active={i === 0 ? 'true' : 'false'}
+            aria-hidden={i === 0 ? undefined : 'true'}
+          >
+            <blockquote class="m-0 text-[clamp(18px,2.2vw,22px)] leading-relaxed font-medium">“{r.quote}”</blockquote>
+            <figcaption class="text-[15px] text-body-muted"><b class="text-ink">{r.name}</b>{r.when && ` · ${r.when}`} · Google review</figcaption>
+          </figure>
+        ))}
+      </div>
+
+      {items.length > 1 && (
+        <div class="flex items-center gap-3">
+          <button type="button" class="size-11 inline-flex items-center justify-center rounded-full border border-card-border bg-white cursor-pointer hover:border-teal" aria-label="Previous review" data-prev>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="flex gap-1">
+            {items.map((_, i) => (
+              <button type="button" class="size-6 inline-flex items-center justify-center cursor-pointer bg-transparent border-0 p-0 group" aria-label={`Show review ${i + 1}`} aria-current={i === 0 ? 'true' : undefined} data-dot={i}>
+                <span class="block size-2.5 rounded-full bg-card-border group-aria-[current=true]:bg-teal"></span>
+              </button>
+            ))}
+          </div>
+          <button type="button" class="size-11 inline-flex items-center justify-center rounded-full border border-card-border bg-white cursor-pointer hover:border-teal" aria-label="Next review" data-next>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <button type="button" class="size-11 inline-flex items-center justify-center rounded-full border border-card-border bg-white cursor-pointer hover:border-teal" aria-label="Pause reviews" data-toggle>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-icon-pause><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-icon-play hidden><path d="M7 5v14l12-7z"/></svg>
+          </button>
+        </div>
+      )}
+
+      {url && <a href={url} class="font-bold text-[15px]" rel="noopener">Read all {count.toLocaleString('en-US')} reviews on Google →</a>}
+    </div>
+  </section>
+)}

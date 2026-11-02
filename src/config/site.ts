@@ -48,6 +48,21 @@ export const stats = {
   passRate: null as null | { value: string; cohortYear: string; reportedN: number },
 };
 
+/**
+ * Google reviews. `count` drives the stat under the hero; `items` drive the rotating
+ * carousel below it (hidden while empty). Copy reviews word for word from the Google
+ * Business Profile — never paraphrase or invent. Use first name + last initial.
+ */
+export const googleReviews = {
+  count: 521,
+  /** Average star rating as shown on Google, e.g. '4.9'. Shown with the count when set. */
+  rating: null as string | null,
+  /** Public link to the Google reviews (Business Profile → Share → reviews link). */
+  url: null as string | null,
+  /** Only 5-star reviews — the carousel header shows five stars. */
+  items: [] as { quote: string; name: string; when?: string }[],
+};
+
 /** Photos: put files in /public/images and set the path. Missing → monogram panel. */
 export const photos = {
   hero: null as null | { src: string; alt: string; width: number; height: number },

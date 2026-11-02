@@ -136,3 +136,56 @@ if (form && success) {
     status.textContent = defaultStatus;
   });
 }
+
+// ---------- Google reviews carousel ----------
+// Auto-advances every 7s; pauses on hover/focus, via the pause button, and never
+// auto-plays when the visitor prefers reduced motion (WCAG 2.2.2).
+const carousel = document.querySelector<HTMLElement>('[data-carousel]');
+if (carousel) {
+  const slides = [...carousel.querySelectorAll<HTMLElement>('[data-slide]')];
+  const dots = [...carousel.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+  const region = carousel.querySelector<HTMLElement>('[data-slides]')!;
+  const toggleBtn = carousel.querySelector<HTMLButtonElement>('[data-toggle]');
+  let index = 0;
+  let timer: number | undefined;
+  let userPaused = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let hoverPaused = false;
+
+  const show = (i: number) => {
+    index = (i + slides.length) % slides.length;
+    slides.forEach((s, n) => {
+      const active = n === index;
+      s.dataset.active = String(active);
+      s.toggleAttribute('aria-hidden', !active);
+    });
+    dots.forEach((d, n) => (n === index ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
+  };
+
+  const sync = () => {
+    clearInterval(timer);
+    const playing = !userPaused && !hoverPaused && slides.length > 1;
+    if (playing) timer = window.setInterval(() => show(index + 1), 7000);
+    // Announce slide changes only when the visitor is driving them.
+    region.setAttribute('aria-live', userPaused ? 'polite' : 'off');
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-label', userPaused ? 'Play reviews' : 'Pause reviews');
+      toggleBtn.querySelector('[data-icon-pause]')!.toggleAttribute('hidden', userPaused);
+      toggleBtn.querySelector('[data-icon-play]')!.toggleAttribute('hidden', !userPaused);
+    }
+  };
+
+  carousel.querySelector('[data-prev]')?.addEventListener('click', () => show(index - 1));
+  carousel.querySelector('[data-next]')?.addEventListener('click', () => show(index + 1));
+  dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
+  toggleBtn?.addEventListener('click', () => {
+    userPaused = !userPaused;
+    sync();
+  });
+  carousel.addEventListener('mouseenter', () => { hoverPaused = true; sync(); });
+  carousel.addEventListener('mouseleave', () => { hoverPaused = false; sync(); });
+  carousel.addEventListener('focusin', () => { hoverPaused = true; sync(); });
+  carousel.addEventListener('focusout', (e) => {
+    if (!carousel.contains(e.relatedTarget as Node)) { hoverPaused = false; sync(); }
+  });
+  sync();
+}
