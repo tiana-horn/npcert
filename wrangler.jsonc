@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "npcert",
+  "account_id": "abf066dfeb5c9e5b16ca1be636e61182",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
@@ -10,7 +11,7 @@
     "run_worker_first": true
   },
   "kv_namespaces": [
-    { "binding": "LEADS" }
+    { "binding": "LEADS", "id": "f165d187709d4de5ac7fde5f9004262d" }
   ],
   "observability": { "enabled": true }
 }
