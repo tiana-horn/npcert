@@ -26,7 +26,7 @@ Design source and requirements: [`reference/`](reference/) — `CLAUDE_CODE_HAND
 
 There's no CI: after committing to `main`, publish from your machine with `npm run deploy:wix`. One-time login first: `npx -y -p node@24 -p @wix/cli@latest wix login` (the Wix CLI needs Node ≥ 24.18; `-p node@24` fetches one just for that command).
 
-- Live (Wix): https://headless-azxstdgmuwo-favoreddigital01-1410.wix-site-host.com
+- Live (Wix site "Option1 NP Cert Demo"): https://option1-npcert-demo-favoreddigital01-1310.wix-site-host.com
 - Dashboard: https://manage.wix.com/dashboard/7a561b7f-d690-4984-b863-cef071dc9fbd
 - Site ID `7a561b7f-d690-4984-b863-cef071dc9fbd`, OAuth client (appId) `7f79c315-340c-4b4b-aed3-341d86877dad`
 
