@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import BookButton from '../components/BookButton.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { catalog as c } from '../config/catalog';
+import { routes } from '../config/site';
+
+/**
+ * Books. The section is hidden until at least one book has a title and a purchase link.
+ * cover: put the image in /public/images/books/ and set the path.
+ */
+const books: { track: string; title: string; format: string; price: string; href: string; cover: { src: string; width: number; height: number } | null }[] = [];
+
+const courses = [
+  { product: c.detailedDiagnosis, text: 'Fully focused on DSM-5-TR. Common diagnoses with clinical application, exam strategy, and a 4-hour live review session.' },
+  { product: c.psychopharm, text: 'Neurotransmitters, pharmacokinetics and dynamics, drug interactions, titration, inducers and inhibitors.' },
+];
+---
+<Base
+  title="Books & Self-Paced Courses for PMHNP and FNP | NP Certification Academy"
+  description="Dr. Kehinde Elisha's review books and self-paced courses: Detailed Diagnosis (DSM-5-TR), Psychopharmacology, and question banks for PMHNP and FNP."
+  crumb="Books & self-paced courses"
+>
+  <PageHero
+    crumb="Books & self-paced courses"
+    title="Study on your own time with Dr. K's books and self-paced courses."
+    sub="Review guides for PMHNP and FNP, plus focused courses on the topics students find hardest."
+  />
+
+  {books.length > 0 && (
+    <section class="section-y-80 px-6">
+      <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+        <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Books</h2>
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(min(240px,100%),1fr))] gap-6">
+          {books.map((b) => (
+            <div class="flex flex-col gap-3">
+              {b.cover ? (
+                <img src={b.cover.src} alt={`Cover of ${b.title}`} width={b.cover.width} height={b.cover.height} loading="lazy" decoding="async" class="w-full aspect-[3/4] object-cover rounded-xl bg-placeholder" />
+              ) : (
+                <div class="rounded-xl aspect-[3/4] bg-teal flex items-center justify-center p-6 text-center" aria-hidden="true"><span class="text-white font-extrabold text-xl">{b.title}</span></div>
+              )}
+              <span class="text-[13px] font-bold text-teal-dark">{b.track}</span>
+              <h3 class="m-0 text-lg font-extrabold">{b.title}</h3>
+              <span class="text-[15px] text-body-muted">{b.format} · {b.price}</span>
+              <a href={b.href} class="font-bold" data-track="checkout_start" data-track-name={b.title} data-location="books">Buy the book →</a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class:list={['section-y-80 px-6', books.length > 0 && 'bg-surface']}>
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="PMHNP · AANP & ANCC" title="Self-paced courses" />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(270px,100%),1fr))] gap-5">
+        {courses.map((co) => (
+          <div class:list={['rounded-[18px] p-7 flex flex-col gap-3', books.length > 0 ? 'bg-white' : 'bg-white border border-card-border']}>
+            <h3 class="m-0 text-xl font-extrabold">{co.product.name}</h3>
+            {co.product.price && <span class="text-[32px] font-extrabold">{co.product.price}<span class="text-[15px] font-semibold text-body-muted">{co.product.priceSuffix}</span></span>}
+            <span class="text-[15px] leading-relaxed text-body-muted grow">{co.text}</span>
+            <BookButton product={co.product} label="Subscribe" location="books_courses" />
+          </div>
+        ))}
+        <div class:list={['rounded-[18px] p-7 flex flex-col gap-3', books.length > 0 ? 'bg-white' : 'bg-white border border-card-border']}>
+          <h3 class="m-0 text-xl font-extrabold">Flashcards &amp; Q bank</h3>
+          <span class="text-[32px] font-extrabold">From {c.qbankFrom}</span>
+          <span class="text-[15px] leading-relaxed text-body-muted grow">Questions organized by exam domain to reinforce learning.</span>
+          <a href={routes.qbank} class="btn btn-secondary text-base py-3">See question banks</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    flushTop={books.length === 0}
+    title="Prefer to learn live?"
+    text="Our live reviews include slides, workbooks and Canvas access."
+    cta={{ label: 'Choose your exam', href: '/#exams' }}
+    location="books_cta"
+  />
+</Base>

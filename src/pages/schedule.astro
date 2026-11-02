@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { catalog as c } from '../config/catalog';
+import { routes, links } from '../config/site';
+
+/**
+ * Class schedule. `null` days/time render as "TBA" — fill them in as cohorts are set.
+ * Prices come from the catalog.
+ */
+const rows: { program: string; detail: string; days: string | null; time: string | null; length: string; href: string }[] = [
+  { program: 'PMHNP Premium', detail: `ANCC or AANP · ${c.pmhnpPremiumAncc.price}`, days: 'Tue & Thu, Sat & Sun, Tue & Sun, or Thu & Sat', time: null, length: '6 weeks', href: `${routes.pmhnp}#plans` },
+  { program: 'PMHNP Extended', detail: `ANCC or AANP · ${c.pmhnpExtended.price}`, days: 'Same day options as Premium', time: null, length: '8 weeks', href: `${routes.pmhnp}#plans` },
+  { program: 'PMHNP Crash Course', detail: `ANCC or AANP · ${c.pmhnpCrashAncc.price}`, days: null, time: null, length: '1 day · 8 hrs', href: `${routes.pmhnp}#plans` },
+  { program: 'FNP/AGNP Comprehensive', detail: `ANCC or AANP · ${c.fnpComprehensive.price}`, days: null, time: null, length: '8 weeks', href: `${routes.fnp}#plans` },
+  { program: 'FNP/AGNP Last Minute Intensive', detail: `${c.fnpIntensive.price}`, days: null, time: null, length: '2 days', href: `${routes.fnp}#plans` },
+  { program: 'AGACNP Premium & Fast Track', detail: `ANCC or AACN · ${c.agacnpPremium.price} / ${c.agacnpFastTrack.price}`, days: 'Tue & Thu', time: '8:15–10:30 PM', length: '8 or 4 weeks', href: `${routes.agacnp}#plans` },
+  { program: 'NCLEX Premium', detail: `RN / PN · ${c.nclexPremium.price}`, days: null, time: null, length: '8 weeks', href: `${routes.nclex}#nclex` },
+  { program: 'Bridge & Mentorship', detail: `${c.bridge.price} · 25 CEUs`, days: 'Tue & Sat', time: null, length: '6 months', href: routes.mentorship },
+  { program: 'Clinician Growth Package', detail: `${c.growth.price} · 20 CEUs`, days: 'Tue & Thu', time: null, length: '3 months', href: routes.mentorship },
+];
+
+const tips = [
+  { title: 'Missed a class?', text: 'PMHNP classes repeat on more than one day, so you can attend the same lesson on another day that week.' },
+  { title: 'Review ending before your exam?', text: 'Current and returning students can add an Upgrade Package.', link: { label: 'See upgrade options', href: `${routes.pmhnp}#plans` } },
+  { title: 'New to us?', text: 'Sit in on a live class free before you enroll.', link: { label: 'Try a free class', href: links.freeTrialPmhnp } },
+];
+const tba = '<span class="text-fine-print">TBA</span>';
+---
+<Base
+  title="Class Schedule 2026–2027 | NP Certification Academy"
+  description="Live Zoom class days, times and course lengths for every NP Certification Academy program: PMHNP, FNP/AGNP, AGACNP, NCLEX, mentorship and CEUs."
+  active="schedule"
+  crumb="Schedule"
+>
+  <PageHero crumb="Schedule" title="Class schedule 2026–2027">
+    <p slot="sub" class="m-0 text-[19px] leading-relaxed text-body-muted max-w-[720px]">
+      All live classes run on Zoom. Times are Eastern. Already enrolled? <a href={routes.login} class="font-bold">Log in to class →</a>
+    </p>
+  </PageHero>
+
+  <section class="px-6 pt-14 md:pt-16 pb-14 md:pb-20">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-6">
+      <!-- Table on wider screens -->
+      <div class="hidden md:block overflow-x-auto border border-card-border rounded-2xl">
+        <table class="w-full min-w-[820px] border-collapse text-[15px] text-left">
+          <thead class="bg-ink text-white">
+            <tr>
+              <th scope="col" class="px-5 py-4 font-bold">Program</th>
+              <th scope="col" class="px-5 py-4 font-bold">Days</th>
+              <th scope="col" class="px-5 py-4 font-bold">Time (ET)</th>
+              <th scope="col" class="px-5 py-4 font-bold">Length</th>
+              <th scope="col" class="px-5 py-4 font-bold"><span class="sr-only">Book</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr class:list={['border-t border-divider', i % 2 === 1 && 'bg-[#F9FBFC]']}>
+                <td class="px-5 py-[18px]"><b>{r.program}</b><br /><span class="text-body-muted">{r.detail}</span></td>
+                <td class="px-5 py-[18px]" set:html={r.days ?? tba} />
+                <td class="px-5 py-[18px]" set:html={r.time ?? tba} />
+                <td class="px-5 py-[18px]">{r.length}</td>
+                <td class="px-5 py-[18px]"><a href={r.href} class="font-bold" aria-label={`Book ${r.program}`}>Book</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Stacked cards on phones -->
+      <ul class="md:hidden flex flex-col gap-3 list-none m-0 p-0">
+        {rows.map((r) => (
+          <li class="border border-card-border rounded-2xl p-5 flex flex-col gap-2 text-[15px]">
+            <div><b class="text-[17px]">{r.program}</b><br /><span class="text-body-muted">{r.detail}</span></div>
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 m-0">
+              <dt class="text-fine-print">Days</dt><dd class="m-0" set:html={r.days ?? tba} />
+              <dt class="text-fine-print">Time (ET)</dt><dd class="m-0" set:html={r.time ?? tba} />
+              <dt class="text-fine-print">Length</dt><dd class="m-0">{r.length}</dd>
+            </dl>
+            <a href={r.href} class="font-bold self-start">Book {r.program} →</a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="m-0 text-sm text-fine-print">Self-paced courses (FNP/AGNP Self-Paced, NCLEX Crash Course, Detailed Diagnosis, Psychopharmacology) start any time.</p>
+    </div>
+  </section>
+
+  <section class="px-6 pb-14 md:pb-20">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-5">
+      {tips.map((t) => (
+        <div class="bg-surface rounded-[18px] p-7 flex flex-col gap-2.5">
+          <h2 class="m-0 text-[19px] font-extrabold">{t.title}</h2>
+          <span class="text-[15px] leading-relaxed text-body-muted">{t.text}</span>
+          {t.link && <a href={t.link.href} class="font-bold self-start">{t.link.label} →</a>}
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,58 @@
+---
+import BookButton from './BookButton.astro';
+import type { Product } from '../config/catalog';
+
+interface Props {
+  product: Product;
+  /** Card title; defaults to the product name. */
+  title?: string;
+  meta?: string;
+  bullets?: string[];
+  /** Muted footnote bullet shown last, e.g. "Out of school 2+ years? Choose Comprehensive." */
+  note?: string;
+  cta: string;
+  featured?: boolean;
+  badge?: string;
+  /** Second booking option shown as a link, e.g. the AANP version of an ANCC plan. */
+  alt?: { label: string; product: Product; cta?: string };
+  id?: string;
+  /** Visual size: 'lg' plan cards (40px price) or 'md' (30–38px). */
+  size?: 'lg' | 'md';
+  location?: string;
+}
+const { product, title = product.name, meta, bullets = [], note, cta, featured = false, badge, alt, id, size = 'lg', location } = Astro.props;
+---
+<div
+  id={id}
+  class:list={[
+    'rounded-[18px] flex flex-col gap-4 scroll-mt-28',
+    size === 'lg' ? 'p-[30px]' : 'p-7',
+    featured ? 'bg-teal-wash border-2 border-teal' : 'bg-white border border-card-border',
+  ]}
+>
+  <div class="flex flex-wrap justify-between items-center gap-x-3 gap-y-2">
+    <h3 class="m-0 text-xl font-extrabold">{title}</h3>
+    {(badge ?? (featured ? 'MOST POPULAR' : null)) && (
+      <span class="shrink-0 bg-teal text-white text-xs font-bold px-2.5 py-[5px] rounded-md">{badge ?? 'MOST POPULAR'}</span>
+    )}
+  </div>
+  {product.price && (
+    <span class:list={['font-extrabold', size === 'lg' ? 'text-[40px]' : 'text-[38px]', 'leading-tight']}>
+      {product.price}{product.priceSuffix && <span class="text-[15px] font-semibold text-body-muted">{product.priceSuffix}</span>}
+    </span>
+  )}
+  {meta && <span class="text-[15px] text-body-muted">{meta}</span>}
+  {(bullets.length > 0 || note) && (
+    <ul class="m-0 pl-5 text-[15px] leading-[1.85] text-body-muted grow">
+      {bullets.map((b) => <li set:html={b} />)}
+      {note && <li class="text-fine-print">{note}</li>}
+    </ul>
+  )}
+  {!(bullets.length > 0 || note) && <span class="grow"></span>}
+  <BookButton product={product} label={cta} variant={featured ? 'primary' : 'secondary'} location={location} />
+  {alt && (
+    <p class="m-0 -mt-1 text-sm text-body-muted text-center">
+      {alt.label} <BookButton product={alt.product} label={alt.cta ?? 'Book here'} variant="link" location={location} class="!text-sm" />
+    </p>
+  )}
+</div>

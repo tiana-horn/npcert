@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import PlanCard from '../components/PlanCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { catalog as c } from '../config/catalog';
+import { routes } from '../config/site';
+import { courseSchema } from '../config/schema';
+
+const description =
+  'AGACNP board review for the ANCC (AGACNP-BC) and AACN (ACNPC-AG) exams from a 12-year ICU clinician. 8-week Premium Plan or 4-week Fast Track, live on Zoom.';
+
+/**
+ * Exam domains. The current site copied these from PMHNP, so they're left empty
+ * until the owner confirms them — the list is hidden while empty.
+ */
+const exams: { name: string; outline: string; domains: string[] }[] = [
+  { name: 'AGACNP-BC (ANCC)', outline: 'Designed according to the ANCC test content outline.', domains: [] },
+  { name: 'ACNPC-AG (AACN)', outline: 'Designed according to the AACN test content outline.', domains: [] },
+];
+---
+<Base
+  title="AGACNP Board Review — ANCC & AACN | NP Certification Academy"
+  description={description}
+  active="agacnp"
+  crumb="AGACNP review"
+  schema={[courseSchema('AGACNP Board Review (ANCC & AACN)', description, routes.agacnp, [c.agacnpPremium, c.agacnpFastTrack])]}
+>
+  <PageHero
+    crumb="AGACNP review"
+    badge="AGACNP · ANCC & AACN"
+    title="Acute care board review from a 12-year ICU clinician."
+    sub="Dr. K cared for critically ill patients at Duke, NewYork-Presbyterian, Montefiore and Johns Hopkins. Her AGACNP review follows the ANCC and AACN test content outlines."
+    ctas={[
+      { label: 'Compare AGACNP plans', href: '#plans' },
+      { label: 'Try a free class', href: '/#trial' },
+    ]}
+  >
+    <div slot="aside" class="bg-ink text-white rounded-[20px] p-7 flex flex-col gap-3 on-dark">
+      <span class="text-sm font-bold text-amber uppercase tracking-[0.06em]">Live class times</span>
+      <span class="text-[26px] font-extrabold">Tuesdays &amp; Thursdays</span>
+      <span class="text-lg text-muted-on-dark">8:15 – 10:30 PM Eastern</span>
+      <span class="text-sm text-muted-on-dark">Evening classes, after day shift.</span>
+    </div>
+  </PageHero>
+
+  <section id="plans" class="section-y-80 px-6 scroll-mt-24">
+    <div class="max-w-[1000px] mx-auto flex flex-col gap-8">
+      <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Choose your AGACNP review</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+        <PlanCard
+          product={c.agacnpPremium}
+          title="Premium Plan"
+          meta="8 weeks · live on Zoom · 70+ hours"
+          bullets={['Comprehensive AGACNP exam coverage', 'Critical thinking for the acute care role', 'Slides, quizzes and an exit exam', 'Canvas discussion boards']}
+          cta="Reserve my seat"
+          featured
+          location="agacnp_plans"
+        />
+        <PlanCard
+          product={c.agacnpFastTrack}
+          title="Fast Track"
+          meta="4 weeks · 20 hours live"
+          bullets={['Targeted review of your weak areas', 'Simplified explanations, live or audio-led', 'Time management and question analysis', 'Best for independent studiers']}
+          cta="Book Fast Track"
+          location="agacnp_plans"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-surface section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+      {exams.map((e) => (
+        <div class="bg-white rounded-[18px] p-[30px] flex flex-col gap-3">
+          <h2 class="m-0 text-[22px] font-extrabold">{e.name}</h2>
+          <span class="text-base leading-relaxed text-body-muted">{e.outline}</span>
+          {e.domains.length > 0 && (
+            <ol class="m-0 pl-[22px] text-[15px] leading-[1.9] text-body-muted">{e.domains.map((d) => <li>{d}</li>)}</ol>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand
+    title="Exam in a few weeks?"
+    text="The Fast Track is built for targeted, last-stretch review."
+    cta={{ label: 'See last-minute options', href: routes.lmr }}
+    location="agacnp_cta"
+  />
+</Base>

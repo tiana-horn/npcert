@@ -1,0 +1,197 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import PlanCard from '../components/PlanCard.astro';
+import BookButton from '../components/BookButton.astro';
+import { catalog } from '../config/catalog';
+import { routes, links, site } from '../config/site';
+import { courseSchema } from '../config/schema';
+
+const c = catalog;
+const description =
+  'Live PMHNP board review for the ANCC and AANP exams with Dr. Kehinde Elisha: 1-day Crash Course, 6-week Premium Plan or 8-week Extended Package. CNE approved.';
+
+const exams = [
+  {
+    name: 'ANCC PMHNP-BC',
+    questions: '175 questions',
+    blurb: 'Emphasizes research, competency-based questions and critical thinking.',
+    domains: ['Scientific foundation', 'Advanced practice skills', 'Diagnosis and treatment', 'Psychotherapy and related theories', 'Ethics, legal principles and cultural care'],
+  },
+  {
+    name: 'AANP PMHNP',
+    questions: '150 questions',
+    blurb: "More clinically focused, with a few theory questions such as Erikson's developmental stages.",
+    domains: ['Assessment', 'Diagnosis', 'Planning', 'Implementation', 'Evaluation'],
+  },
+];
+
+const features = [
+  { title: '2 live classes / week', text: '3 hours each, on Zoom' },
+  { title: 'Flexible days', text: 'Weekday or weekend pairs' },
+  { title: 'Slides, LMR & Canvas', text: 'Included in Premium' },
+  { title: 'CNE approved', text: 'Kansas State Board of Nursing' },
+];
+
+/** Class times per day pair. Set a time (e.g. '7:00–10:00 PM') to show it. */
+const dayPairs: { days: string; time: string | null }[] = [
+  { days: 'Tue & Thu', time: null },
+  { days: 'Sat & Sun', time: null },
+  { days: 'Tue & Sun', time: null },
+  { days: 'Thu & Sat', time: null },
+];
+
+const addOns = [
+  { product: c.detailedDiagnosis, text: 'Self-paced, focused on DSM-5-TR with clinical application, plus a 4-hour live review session.' },
+  { product: c.psychopharm, text: 'Neurotransmitters, pharmacokinetics and dynamics, interactions, titration, inducers and inhibitors.' },
+];
+---
+<Base
+  title="PMHNP Board Review — ANCC & AANP | NP Certification Academy"
+  description={description}
+  active="pmhnp"
+  crumb="PMHNP review"
+  schema={[courseSchema('PMHNP Board Review (ANCC & AANP)', description, routes.pmhnp, [c.pmhnpCrashAncc, c.pmhnpPremiumAncc, c.pmhnpExtended])]}
+>
+  <PageHero
+    crumb="PMHNP review"
+    badge="PMHNP · ANCC & AANP"
+    title="PMHNP board review that teaches you to think like the exam."
+    sub="Live Zoom review with Dr. Kehinde Elisha, built on the ANCC and AANP test content outlines. Pick a 1-day crash course, the 6-week Premium Plan, or 8 weeks Extended."
+    ctas={[
+      { label: 'Compare PMHNP plans', href: '#plans' },
+      { label: 'Try a free class', href: links.freeTrialPmhnp },
+    ]}
+  >
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mt-3">
+      {features.map((f) => (
+        <div class="bg-white rounded-[14px] px-5 py-[18px]"><b class="text-[17px]">{f.title}</b><br /><span class="text-sm text-body-muted">{f.text}</span></div>
+      ))}
+    </div>
+  </PageHero>
+
+  <!-- ANCC vs AANP -->
+  <section class="section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="Know your exam" title="ANCC or AANP? We teach to the one you're taking." />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+        {exams.map((e) => (
+          <div class="border border-card-border rounded-[18px] p-[30px] flex flex-col gap-3.5">
+            <div class="flex justify-between items-baseline gap-3 flex-wrap">
+              <h3 class="m-0 text-2xl font-extrabold">{e.name}</h3>
+              <span class="text-[15px] font-bold text-teal-dark">{e.questions}</span>
+            </div>
+            <p class="m-0 text-base leading-relaxed text-body-muted">{e.blurb}</p>
+            <ol class="m-0 pl-[22px] text-[15px] leading-[1.9] text-body-muted">
+              {e.domains.map((d) => <li>{d}</li>)}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Plans -->
+  <section id="plans" class="bg-surface section-y-80 px-6 scroll-mt-24">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="Plans · ANCC or AANP" title="Choose your PMHNP review" sub="Same price for either exam. Choose ANCC or AANP when you book." />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-5">
+        <PlanCard
+          product={c.pmhnpCrashAncc}
+          title="Crash Course"
+          meta="1-day live review · 8 hours"
+          bullets={['High-yield content in one day', 'Exam strategy and question analysis', "Best if you've already studied"]}
+          cta="Book the crash course"
+          alt={{ label: 'Taking the AANP exam?', product: c.pmhnpCrashAanp }}
+          location="pmhnp_plans"
+        />
+        <PlanCard
+          product={c.pmhnpPremiumAncc}
+          title="Premium Plan"
+          meta="6 weeks · 2 live classes a week · 3 hrs each"
+          bullets={['Full content-outline coverage', 'Slides and Last Minute Review included', 'Canvas course access', 'WhatsApp study community']}
+          cta="Reserve my seat"
+          featured
+          alt={{ label: 'Taking the AANP exam?', product: c.pmhnpPremiumAanp }}
+          location="pmhnp_plans"
+        />
+        <PlanCard
+          product={c.pmhnpExtended}
+          title="Extended Package"
+          meta="8 weeks of live sessions"
+          bullets={['Everything in Premium', 'Two extra weeks to absorb content', 'Great for working nurses and repeat test-takers']}
+          cta="Book Extended"
+          location="pmhnp_plans"
+        />
+      </div>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-4">
+        <div class="bg-white rounded-[14px] px-[22px] py-5 text-[15px] leading-[1.55]">
+          <b>ONE:THREE private review{c.pmhnpOneThree.price && ` · ${c.pmhnpOneThree.price}`}</b><br />
+          <span class="text-body-muted">Private sessions with Dr. K and a study plan built around your gaps.</span>{' '}
+          <BookButton product={c.pmhnpOneThree} label="Book private" variant="link" location="pmhnp_plans" class="!text-[15px]" />
+        </div>
+        <div class="bg-white rounded-[14px] px-[22px] py-5 text-[15px] leading-[1.55]">
+          <b>Upgrade Package{c.pmhnpUpgrade.price && ` · ${c.pmhnpUpgrade.price}`}</b><br />
+          <span class="text-body-muted">Current or returning students whose review expired: 3 more weeks, 2 classes a week.</span>{' '}
+          <BookButton product={c.pmhnpUpgrade} label="Extend" variant="link" location="pmhnp_plans" class="!text-[15px]" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schedule options -->
+  <section class="section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-wrap gap-12 items-start">
+      <div class="flex-[1_1_380px] min-w-0 flex flex-col gap-3.5">
+        <span class="eyebrow">Built around your shifts</span>
+        <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Pick the two days that work for you</h2>
+        <p class="m-0 text-[17px] leading-relaxed text-body-muted">The same class runs on more than one day, so if your shift changes you can switch days without falling behind.</p>
+        <a href={routes.schedule} class="font-bold text-base self-start">See all class times →</a>
+      </div>
+      <div class="flex-[1_1_460px] min-w-0 grid grid-cols-2 gap-3">
+        {dayPairs.map((d) => (
+          <div class="border border-card-border rounded-[14px] p-5 font-bold text-[17px]">
+            {d.days}{d.time && <><br /><span class="font-medium text-sm text-body-muted">{d.time} ET</span></>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Self-paced add-ons -->
+  <section class="bg-ink text-white section-y-80 px-6 on-dark">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Strengthen your weakest domain</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-5">
+        {addOns.map((a) => (
+          <div class="border border-footer-rule rounded-[18px] p-[26px] flex flex-col gap-2.5">
+            <h3 class="m-0 text-[19px] font-bold">{a.product.name}</h3>
+            {a.product.price && <span class="text-[28px] font-extrabold text-amber">{a.product.price}<span class="text-[15px] font-semibold text-muted-on-dark">{a.product.priceSuffix}</span></span>}
+            <span class="text-[15px] leading-relaxed text-muted-on-dark grow">{a.text}</span>
+            <BookButton product={a.product} label="Subscribe" variant="link" location="pmhnp_addons" class="!text-amber" />
+          </div>
+        ))}
+        <div class="border border-footer-rule rounded-[18px] p-[26px] flex flex-col gap-2.5">
+          <h3 class="m-0 text-[19px] font-bold">Flashcards &amp; Q bank</h3>
+          <span class="text-[28px] font-extrabold text-amber">From {c.qbankFrom}</span>
+          <span class="text-[15px] leading-relaxed text-muted-on-dark grow">Questions organized by domain to reinforce what you learn in class.</span>
+          <a href={routes.qbank} class="!text-amber font-bold">See question banks →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section-y-80 px-6">
+    <div class="max-w-[900px] mx-auto text-center flex flex-col gap-[18px] items-center">
+      <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Not sure which plan fits?</h2>
+      <p class="m-0 text-lg text-body-muted">Sit in on a free class, or call and we'll help you pick in five minutes.</p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a href={links.freeTrialPmhnp} class="btn btn-primary text-[17px] min-h-[52px] rounded-xl px-[26px]" data-track="cta_click" data-location="pmhnp_footer_cta" data-label="Try a free class">Try a free class</a>
+        <a href={`tel:${site.phone.tel}`} class="btn btn-secondary text-[17px] min-h-[52px] rounded-xl px-6" data-track="tel_click" data-location="pmhnp_footer_cta">Call {site.phone.display}</a>
+      </div>
+      <a href={links.sampleLecture} class="font-bold" data-track="cta_click" data-location="pmhnp_footer_cta" data-label="Watch sample lecture">Watch a sample PMHNP lecture →</a>
+    </div>
+  </section>
+</Base>

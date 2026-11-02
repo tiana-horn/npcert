@@ -3,7 +3,10 @@
  *
  *   POST /api/trial   → validate, drop honeypot hits, store lead in KV, optionally forward to CRM webhook
  *   GET  /api/leads   → CSV export of stored leads (requires `Authorization: Bearer $ADMIN_TOKEN`)
+ *   old Wix URLs      → 301 to the new routes (see redirects.ts)
  */
+
+import { redirectFor } from './redirects';
 
 interface Env {
   ASSETS: Fetcher;
@@ -101,6 +104,9 @@ export default {
     }
     if (pathname === '/api/leads' && request.method === 'GET') return handleLeads(request, env);
     if (pathname.startsWith('/api/')) return json({ error: 'Not found' }, 404);
+
+    const target = redirectFor(new URL(request.url));
+    if (target) return Response.redirect(new URL(target, request.url).toString(), 301);
 
     const res = await env.ASSETS.fetch(request);
     // Keep preview/staging hosts out of search results; only the real domain should be indexed.

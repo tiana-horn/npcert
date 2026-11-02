@@ -1,22 +1,31 @@
 ---
 import '../styles/global.css';
 import fontUrl from '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-800-normal.woff2?url';
-import { site } from '../config/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site, type NavKey } from '../config/site';
+import { orgSchema, breadcrumbSchema } from '../config/schema';
 
 interface Props {
+  title?: string;
+  description?: string;
+  active?: NavKey;
+  /** Page name for the breadcrumb (Home / <crumb>). Omit on the homepage. */
+  crumb?: string;
   schema?: object[];
 }
-const { schema = [] } = Astro.props;
+const { title = site.title, description = site.description, active, crumb, schema = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).toString();
 const ogImage = site.ogImage ? new URL(site.ogImage, site.url).toString() : null;
+const allSchema = [orgSchema(), ...(crumb ? [breadcrumbSchema(crumb, canonical)] : []), ...schema];
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{site.title}</title>
-    <meta name="description" content={site.description} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
@@ -24,16 +33,24 @@ const ogImage = site.ogImage ? new URL(site.ogImage, site.url).toString() : null
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
-    <meta property="og:title" content={site.title} />
-    <meta property="og:description" content={site.description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
 
-    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+    {allSchema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
   </head>
   <body>
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] btn btn-primary">Skip to content</a>
-    <slot />
+    <Header active={active} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <slot name="after" />
+    <script>
+      import '../scripts/main';
+    </script>
   </body>
 </html>

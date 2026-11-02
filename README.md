@@ -1,8 +1,15 @@
 # NP Certification Academy — website
 
-Homepage rebuild ("Option 1 — Clinical Navy"). Astro + Tailwind, static output, served by a Cloudflare Worker that also handles the free-trial form.
+Site rebuild ("Option 1 — Clinical Navy"): homepage plus 11 inner pages. Astro + Tailwind, static output, served by a Cloudflare Worker that also handles the free-trial form and the 301s from the old Wix URLs.
 
-Design source and requirements: [`reference/`](reference/) (`CLAUDE_CODE_HANDOVER.md`, `option-1-homepage-reference.html`).
+Design source and requirements: [`reference/`](reference/) — `CLAUDE_CODE_HANDOVER_1.md` (current) and `option-1-pages/` (one design file per page).
+
+| Route | Page |
+|---|---|
+| `/` | Homepage |
+| `/pmhnp`, `/fnp-agnp`, `/agacnp`, `/nclex-and-certifications` | Exam tracks |
+| `/last-minute-review`, `/question-banks`, `/schedule` | |
+| `/mentorship-ceus`, `/books`, `/summit-2026`, `/login` | |
 
 ## Commands
 
@@ -16,7 +23,10 @@ First deploy: `npx wrangler login` once, then `npm run deploy`. The `LEADS` KV n
 
 ## Editing content
 
-**All owner-supplied content lives in [`src/config/site.ts`](src/config/site.ts).** Anything set to `null` (or an empty list) is hidden on the page — placeholder text is never shipped. Fill a value in and redeploy:
+- **Every price and booking/checkout link: [`src/config/catalog.ts`](src/config/catalog.ts).** Taken from the current Wix site — confirm before launch. A product with `href: null` shows a "Call to book" button instead of a dead link.
+- **Everything else owner-supplied: [`src/config/site.ts`](src/config/site.ts)**, plus small, clearly marked data blocks at the top of `schedule`, `summit-2026`, `books`, `agacnp` and `mentorship-ceus` pages.
+
+Anything set to `null` (or an empty list) is hidden on the page — placeholder text is never shipped. Fill a value in and redeploy:
 
 - prices (`exams[].price`, `formats[].price`), cohort date / seats, nurses-taught count, verified pass rate
 - testimonials (the section stays hidden until at least one exists)
@@ -42,6 +52,7 @@ Clicks on elements with `data-track` push events to `window.dataLayer` (GTM/GA4)
 
 - [ ] Owner content in `site.ts` (see above); confirm contact details and `CONFIRM` links
 - [ ] Decide the lead destination (`LEAD_WEBHOOK_URL`)
-- [ ] Build the inner pages, or keep them on Wix under a subdomain — today every track/checkout link points to the existing Wix pages
-- [ ] Custom domain + 301 redirects from old Wix URLs (add a `_redirects` file to `public/` once the new URLs exist)
+- [ ] Owner answers for the site inconsistencies listed in the handover (PMHNP hours, AGACNP Fast Track length and domains, NCLEX Upgrade length, PMH-RN / Nurse Executive booking links)
+- [ ] Still missing: class times, book details, Q-bank prices, summit dates/prices/speakers/agenda, ONE:THREE price, CNE provider number
+- [ ] Point the custom domain at the Worker (old Wix URLs already 301 — see [`worker/redirects.ts`](worker/redirects.ts))
 - [ ] Lighthouse run against the deployed URL

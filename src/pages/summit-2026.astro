@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import PlanCard from '../components/PlanCard.astro';
+import { catalog as c } from '../config/catalog';
+import { summit } from '../config/site';
+import { summitSchema } from '../config/schema';
+
+/**
+ * Summit details. Anything null/empty is hidden until the owner supplies it.
+ * Set `summit.startDate` in site.ts as well to publish Event schema.
+ */
+const details = {
+  dates: null as string | null, // e.g. 'June 12–14, 2026'
+  ceHours: null as number | null,
+};
+const speakers: { name: string; role: string; photo: { src: string; width: number; height: number } | null }[] = [
+  { name: 'Dr. Kehinde Elisha', role: 'FNP, PMHNP-BC · Founder, IACA & NP Certification Academy', photo: null },
+];
+const agenda: { time: string; session: string }[] = [];
+const inPersonExtras: string[] = []; // e.g. 'Breakfast and lunch included'
+const virtualExtras: string[] = []; // e.g. 'Recordings for 60 days'
+
+const initials = (name: string) => name.replace(/^Dr\.\s*/, '').split(/\s+/).map((w) => w[0]).join('').slice(0, 2);
+---
+<Base
+  title="Clinician Advancement Summit 2026 — Kalahari Resort, VA & Virtual | NP Certification Academy"
+  description="Clinical education, business growth and networking for nurse practitioners and clinicians. IACA × NP Certification Academy, in person at Kalahari Resort, Virginia, or online."
+  crumb="Clinician Advancement Summit 2026"
+  schema={summitSchema()}
+>
+  <PageHero
+    dark
+    large
+    crumb="Clinician Advancement Summit 2026"
+    title={summit.name}
+    sub="Clinical education, business growth and networking for nurse practitioners and clinicians — in person at Kalahari Resort, Virginia, or online."
+    ctas={[
+      { label: 'Get an in-person pass', href: c.summitInPerson.href!, variant: 'primary' },
+      { label: 'Get a virtual pass', href: c.summitVirtual.href!, variant: 'ghost' },
+    ]}
+    location="summit_hero"
+  >
+    <span slot="eyebrow" class="eyebrow !text-amber">IACA × NP Certification Academy</span>
+    <div slot="aside" class="bg-white text-ink rounded-[20px] p-7 flex flex-col gap-3.5">
+      {details.dates && <div><span class="text-[13px] font-bold text-teal-dark uppercase">When</span><br /><b class="text-xl">{details.dates}</b></div>}
+      <div><span class="text-[13px] font-bold text-teal-dark uppercase">Where</span><br /><b class="text-xl">Kalahari Resort, Virginia</b><br /><span class="text-[15px] text-body-muted">and online</span></div>
+      {details.ceHours && <div><span class="text-[13px] font-bold text-teal-dark uppercase">CE</span><br /><b class="text-xl">{details.ceHours} contact hours</b></div>}
+    </div>
+  </PageHero>
+
+  <section class="section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Speakers</h2>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(min(220px,100%),1fr))] gap-6">
+        {speakers.map((s) => (
+          <div class="flex flex-col gap-2.5">
+            {s.photo ? (
+              <img src={s.photo.src} alt={s.name} width={s.photo.width} height={s.photo.height} loading="lazy" decoding="async" class="w-full aspect-square object-cover rounded-2xl bg-placeholder" />
+            ) : (
+              <div class="rounded-2xl aspect-square bg-teal flex items-center justify-center" aria-hidden="true"><span class="text-white/90 font-extrabold text-6xl">{initials(s.name)}</span></div>
+            )}
+            <b class="text-[17px]">{s.name}</b>
+            <span class="text-sm text-body-muted">{s.role}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-surface section-y-80 px-6">
+    <div class="max-w-[1000px] mx-auto flex flex-col gap-7">
+      <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Passes</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+        <PlanCard
+          product={c.summitInPerson}
+          title="In-person"
+          bullets={['All sessions at Kalahari Resort, VA', 'Networking with clinicians', ...inPersonExtras]}
+          cta="Buy in-person pass"
+          featured
+          badge=""
+          size="md"
+          location="summit_passes"
+        />
+        <PlanCard
+          product={c.summitVirtual}
+          title="Virtual"
+          bullets={['Live-streamed sessions', 'Business track for NP entrepreneurs', ...virtualExtras]}
+          cta="Buy virtual pass"
+          size="md"
+          location="summit_passes"
+        />
+      </div>
+    </div>
+  </section>
+
+  {agenda.length > 0 && (
+    <section class="section-y-80 px-6">
+      <div class="max-w-[820px] mx-auto flex flex-col gap-3.5">
+        <h2 class="m-0 text-[clamp(26px,3vw,34px)] font-extrabold">Agenda</h2>
+        <ol class="list-none m-0 p-0">
+          {agenda.map((a) => (
+            <li class="border-t border-divider last:border-b py-4 flex gap-5 flex-wrap"><b class="w-[120px]">{a.time}</b><span class="text-body-muted">{a.session}</span></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+</Base>

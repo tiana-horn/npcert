@@ -1,0 +1,60 @@
+---
+interface Cta { label: string; href: string; variant?: 'primary' | 'secondary' | 'ghost' }
+interface Props {
+  crumb?: string;
+  badge?: string;
+  dark?: boolean;
+  title: string;
+  /** Use the larger homepage-style H1. */
+  large?: boolean;
+  sub?: string;
+  ctas?: Cta[];
+  location?: string;
+}
+const { crumb, badge, dark = false, title, large = false, sub, ctas = [], location = 'page_hero' } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+---
+<section class:list={['px-6', dark ? 'bg-ink text-white on-dark py-14 md:py-[72px]' : 'bg-surface pt-12 pb-14 md:pt-16 md:pb-[72px]']}>
+  <div class:list={['max-w-[1200px] mx-auto', hasAside ? 'flex flex-wrap gap-10 items-center' : 'flex flex-col gap-[22px]']}>
+    <div class={hasAside ? 'flex-[999_1_560px] min-w-0 flex flex-col gap-[22px]' : 'contents'}>
+      {crumb && (
+        <nav aria-label="Breadcrumb" class:list={['text-sm', dark ? 'text-muted-on-dark' : 'text-fine-print']}>
+          <a href="/" class={dark ? '!text-muted-on-dark hover:!text-white' : ''}>Home</a> / <span aria-current="page">{crumb}</span>
+        </nav>
+      )}
+      {badge && (
+        <span class:list={[
+          'self-start font-bold text-[13px] tracking-[0.04em] uppercase px-3.5 py-2 rounded-full',
+          dark ? 'bg-amber text-ink' : 'bg-teal-tint text-teal-dark',
+        ]}>{badge}</span>
+      )}
+      <slot name="eyebrow" />
+      <h1 class:list={[
+        'm-0 font-extrabold tracking-[-0.02em] max-w-[880px]',
+        large ? 'text-[clamp(36px,5vw,60px)] leading-[1.06]' : 'text-[clamp(34px,4.6vw,54px)] leading-[1.1]',
+      ]}>{title}</h1>
+      {sub && <p class:list={['m-0 text-[19px] leading-relaxed max-w-[720px]', dark ? 'text-muted-on-dark' : 'text-body-muted']}>{sub}</p>}
+      <slot name="sub" />
+      {ctas.length > 0 && (
+        <div class="flex flex-wrap gap-3">
+          {ctas.map((c, i) => (
+            <a
+              href={c.href}
+              class:list={[
+                'btn text-[17px] min-h-[52px] rounded-xl',
+                (c.variant ?? (i === 0 ? 'primary' : 'secondary')) === 'primary' && 'btn-primary px-[26px]',
+                (c.variant ?? (i === 0 ? 'primary' : 'secondary')) === 'secondary' && 'btn-secondary px-6',
+                c.variant === 'ghost' && 'px-6 border-2 border-white !text-white bg-transparent hover:bg-white/10',
+              ]}
+              data-track={c.href.includes('stripe.com') ? 'checkout_start' : 'cta_click'}
+              data-location={location}
+              data-label={c.label}
+            >{c.label}</a>
+          ))}
+        </div>
+      )}
+      <slot />
+    </div>
+    {hasAside && <div class="flex-[1_1_320px] min-w-0"><slot name="aside" /></div>}
+  </div>
+</section>

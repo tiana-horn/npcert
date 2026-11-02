@@ -1,0 +1,35 @@
+---
+import type { Product } from '../config/catalog';
+import { site } from '../config/site';
+
+interface Props {
+  product: Product;
+  label: string;
+  /** 'primary' | 'secondary' | 'teal' buttons, or 'link' for an inline text link. */
+  variant?: 'primary' | 'secondary' | 'teal' | 'link';
+  location?: string;
+  class?: string;
+}
+const { product, label, variant = 'primary', location, class: cls } = Astro.props;
+
+// No booking link yet → send people to the phone instead of a dead button.
+const href = product.href ?? `tel:${site.phone.tel}`;
+const text = product.href ? label : `Call to book · ${site.phone.display}`;
+const track = product.href ? 'checkout_start' : 'tel_click';
+const external = product.href?.startsWith('http');
+---
+<a
+  href={href}
+  class:list={[
+    variant === 'link' ? 'font-bold text-base' : 'btn text-base py-3.5 text-center',
+    variant === 'primary' && 'btn-primary',
+    variant === 'secondary' && 'btn-secondary',
+    variant === 'teal' && 'btn-teal',
+    cls,
+  ]}
+  data-track={track}
+  data-track-name={product.name}
+  data-location={location}
+  data-label={text}
+  rel={external ? 'noopener' : undefined}
+>{text}{variant === 'link' && ' →'}</a>

@@ -6,7 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://www.npcertificationacademy.com',
   output: 'static',
+  trailingSlash: 'never',
   integrations: [sitemap()],
-  build: { inlineStylesheets: 'always' },
+  build: { inlineStylesheets: 'always', format: 'file' },
   vite: { plugins: [tailwindcss()] },
 });

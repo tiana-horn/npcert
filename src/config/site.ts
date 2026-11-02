@@ -6,8 +6,7 @@
  * Items marked "CONFIRM" were taken from the current Wix site and need sign-off.
  */
 
-const WIX = 'https://www.npcertificationacademy.com';
-const ACUITY = 'https://app.acuityscheduling.com/schedule.php?owner=23270809&appointmentType=category:';
+import { catalog } from './catalog';
 
 export const site = {
   url: 'https://www.npcertificationacademy.com',
@@ -55,18 +54,57 @@ export const photos = {
   portrait: null as null | { src: string; alt: string; width: number; height: number },
 };
 
+/** Internal routes (see reference/CLAUDE_CODE_HANDOVER_1.md §1b). */
+export const routes = {
+  home: '/',
+  pmhnp: '/pmhnp',
+  fnp: '/fnp-agnp',
+  agacnp: '/agacnp',
+  nclex: '/nclex-and-certifications',
+  lmr: '/last-minute-review',
+  qbank: '/question-banks',
+  schedule: '/schedule',
+  mentorship: '/mentorship-ceus',
+  books: '/books',
+  summit: '/summit-2026',
+  login: '/login',
+} as const;
+
+export type NavKey = 'home' | 'pmhnp' | 'fnp' | 'agacnp' | 'nclex' | 'lmr' | 'qbank' | 'schedule' | 'other';
+
+export const mainNav: { key: NavKey; label: string; href: string }[] = [
+  { key: 'pmhnp', label: 'PMHNP', href: routes.pmhnp },
+  { key: 'fnp', label: 'FNP / AGNP', href: routes.fnp },
+  { key: 'agacnp', label: 'AGACNP', href: routes.agacnp },
+  { key: 'nclex', label: 'NCLEX & certs', href: routes.nclex },
+  { key: 'lmr', label: 'Last Minute Review', href: routes.lmr },
+  { key: 'qbank', label: 'Question banks', href: routes.qbank },
+  { key: 'schedule', label: 'Schedule', href: routes.schedule },
+];
+
+export const utilityNav = [
+  { label: 'Summit 2026', href: routes.summit },
+  { label: 'Mentorship & CEUs', href: routes.mentorship },
+  { label: 'Books', href: routes.books },
+];
+
 export const links = {
-  studentLogin: `${WIX}/login-to-class`,
-  allSchedule: `${WIX}/copy-of-schedule-and-syllabus-3`,
-  questionBank: `${WIX}/copy-of-pmhnp-ancc-aanp-plus-more`,
-  ceMentorship: `${WIX}/copy-of-nclex-cert-pmh-rn-rn-lpn-1`,
-  books: `${WIX}/copy-of-home`,
-  lastMinuteReview: `${WIX}/last-minute-review`,
-  sampleLecture: 'https://youtu.be/P4uZ6i2M938', // CONFIRM this is the sample PMHNP lecture
-  summit: `${WIX}/clinician-advancement-summit`,
-  oneThree: `${ACUITY}A%20ONE%20%3A%20THREE%20Bundled%20private%20review%20course`,
-  pmhnpUpgrade: `${ACUITY}A%20PMHNP%20Exam%20Review%20Upgrade%20Package%20%28For%20Students%20with%20Expired%206-Week%20Review%29%20%7C%203-Week%20Extension%20%7C%202%20Classes%20per%20Week%20%7C%20Content%20Reinforcement%2C%20LMR%2C%20Exam%20Strategy%20Review%20%26%20Question%20Breakdown%20%7C%20Current%20or%20Returning%20Students%20Only`,
+  /** Thinkific classroom. The /login page links here. */
+  classroom: 'https://kehinde-s-site-79b3.thinkific.com/users/sign_in',
+  freeTrialPmhnp: 'https://www.signupgenius.com/go/10C0D4AA9AE29A0F4C52-64636770-free',
+  freeTrialFnp: 'https://www.signupgenius.com/go/10C0D4AA9AE29A0F4C52-62916546-free',
+  sampleLecture: 'https://youtu.be/P4uZ6i2M938',
+  whatsapp: 'https://chat.whatsapp.com/IJlEPutKiRHA3b7hVrrb24',
+  confidentPrescriber: 'https://www.confidentprescriber.com/',
 };
+
+export const social = [
+  { label: 'Instagram', href: 'https://www.instagram.com/drkehindeelisha/' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@npcertificationacademyllc' },
+  { label: 'TikTok', href: 'https://www.tiktok.com/@npcertificationacademy' },
+  { label: 'Facebook group', href: 'https://www.facebook.com/groups/httpswww.facebook.comgroups317253332913398' },
+  { label: 'X', href: 'https://x.com/llc_np56929' },
+];
 
 export type Exam = {
   id: string;
@@ -83,8 +121,8 @@ export const exams: Exam[] = [
     id: 'pmhnp',
     name: 'PMHNP',
     blurb: 'ANCC & AANP. 6-week live review, 2 classes a week, question bank and content-outline workbook.',
-    price: null,
-    href: links.allSchedule, // CONFIRM: no dedicated PMHNP page found on the current site
+    price: catalog.pmhnpCrashAncc.price,
+    href: routes.pmhnp,
     linkLabel: 'See PMHNP schedule',
     featured: true,
   },
@@ -92,24 +130,24 @@ export const exams: Exam[] = [
     id: 'fnp-agnp',
     name: 'FNP / AGNP',
     blurb: 'ANCC & AANP. Full live review or the 4-week FNP crash course.',
-    price: null,
-    href: `${WIX}/copy-of-fnp-agnp-ancc-aanp-4`,
+    price: catalog.fnpIntensive.price,
+    href: routes.fnp,
     linkLabel: 'See FNP/AGNP options',
   },
   {
     id: 'agacnp',
     name: 'AGACNP',
     blurb: 'ANCC & AACN acute care review, taught from years of ICU practice.',
-    price: null,
-    href: `${WIX}/copy-of-agacnp-ancc-aacn-2`,
+    price: catalog.agacnpFastTrack.price,
+    href: routes.agacnp,
     linkLabel: 'See AGACNP review',
   },
   {
     id: 'nclex',
     name: 'NCLEX RN / PN',
     blurb: 'Next Generation NCLEX review for 2026, with clinical-judgment case practice.',
-    price: null,
-    href: `${WIX}/copy-of-nclex-cert-pmh-rn-rn-lpn`,
+    price: catalog.nclexSelfPaced.price,
+    href: routes.nclex,
     linkLabel: 'See NCLEX review',
   },
 ];
@@ -118,6 +156,8 @@ export type Format = {
   id: string;
   name: string;
   price: string | null;
+  /** Small label after the price, e.g. "PMHNP Premium". */
+  priceNote?: string;
   bullets: string[];
   cta: { label: string; href: string };
   variant: 'primary' | 'teal' | 'secondary';
@@ -128,26 +168,27 @@ export const formats: Format[] = [
   {
     id: 'group',
     name: 'Live group review',
-    price: null,
-    bullets: ['6 weeks · 2 live classes a week', 'Replays, workbook, question bank', 'Live or hybrid schedule', 'WhatsApp study community'],
-    cta: { label: 'Reserve my seat', href: links.allSchedule },
+    price: catalog.pmhnpPremiumAncc.price,
+    priceNote: 'PMHNP Premium',
+    bullets: ['6 weeks · 2 live classes a week', 'Slides, Last Minute Review & Canvas access', 'Live or hybrid schedule', 'WhatsApp study community'],
+    cta: { label: 'Reserve my seat', href: `${routes.pmhnp}#plans` },
     variant: 'primary',
   },
   {
     id: 'one-three',
     name: 'ONE:THREE private review',
-    price: null,
+    price: catalog.pmhnpOneThree.price,
     bullets: ['Private sessions with Dr. K', 'Study plan built around your gaps', 'Best for repeat test-takers & ADHD', 'Everything in group review'],
-    cta: { label: 'Book a private review', href: links.oneThree },
+    cta: { label: 'Book a private review', href: catalog.pmhnpOneThree.href! },
     variant: 'teal',
     featured: true,
   },
   {
     id: 'lmr',
     name: 'Last Minute Review',
-    price: null,
+    price: catalog.fnpIntensive.price && `From ${catalog.fnpIntensive.price}`,
     bullets: ['For exams in the next few weeks', 'High-yield topics only', 'Timed practice exam'],
-    cta: { label: 'Start cramming smart', href: links.lastMinuteReview },
+    cta: { label: 'Start cramming smart', href: routes.lmr },
     variant: 'secondary',
   },
 ];
@@ -158,7 +199,7 @@ export const testimonials: { quote: string; name: string; credential: string; re
 export const sisterOrgs: { name: string; tagline: string; href: string | null }[] = [
   { name: 'SeriSphere Center', tagline: 'Behavioral & integrative health', href: null },
   { name: 'IACA', tagline: "Int'l Association for Clinician Advancement", href: null },
-  { name: 'Confident Prescriber', tagline: 'Weekly prescribing support for NPs', href: 'https://www.confidentprescriber.com/' },
+  { name: 'Confident Prescriber', tagline: 'Weekly prescribing support for NPs', href: links.confidentPrescriber },
 ];
 
 /** FAQ answers set to null are hidden (and left out of FAQPage schema). */
@@ -187,7 +228,7 @@ export const faqs: { q: string; a: string | null }[] = [
 export const summit = {
   name: 'Clinician Advancement Summit 2026',
   detail: 'IACA & NP Certification Academy · Live at Kalahari Resort, VA and virtual',
-  href: links.summit,
+  href: routes.summit,
   /** ISO date for Event schema; schema is skipped until set. */
   startDate: null as string | null,
 };

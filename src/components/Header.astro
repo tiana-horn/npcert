@@ -1,34 +1,35 @@
 ---
-import { site, cohort, links } from '../config/site';
+import { site, cohort, mainNav, utilityNav, routes, type NavKey } from '../config/site';
 
-const navLinks = [
-  { label: 'Exam reviews', href: '#exams' },
-  { label: 'Schedule & pricing', href: '#formats' },
-  { label: 'Question bank', href: links.questionBank },
-  { label: 'CE & mentorship', href: links.ceMentorship },
-  { label: 'About Dr. K', href: '#about' },
-];
+interface Props {
+  active?: NavKey;
+}
+const { active = 'other' } = Astro.props;
 ---
 <div class="bg-ink text-white text-sm on-dark">
   <div class="container-page py-2.5 flex flex-wrap gap-x-6 gap-y-2 justify-between items-center">
-    {cohort.nextCohortStart ? (
-      <span class="font-semibold">
-        Next {cohort.track} live cohort starts {cohort.nextCohortStart}
-        {cohort.seatsLeft != null && <> · <span class="text-amber">{cohort.seatsLeft} seats left</span></>}
-      </span>
-    ) : (
-      <span></span>
-    )}
-    <span class="flex flex-wrap gap-5">
-      <a href={`tel:${site.phone.tel}`} class="!text-white no-underline hover:underline" data-track="tel_click" data-location="utility_bar">Call {site.phone.display}</a>
-      <a href={links.studentLogin} class="!text-white no-underline hover:underline">Student login</a>
+    <span class="font-semibold">
+      {cohort.nextCohortStart ? (
+        <>
+          Next {cohort.track} live cohort starts {cohort.nextCohortStart}
+          {cohort.seatsLeft != null && <> · <span class="text-amber">{cohort.seatsLeft} seats left</span></>}
+        </>
+      ) : (
+        <>Now enrolling 2026–2027 cohorts</>
+      )}
+      {' · '}<a href="/#trial" class="!text-amber no-underline hover:underline" data-track="cta_click" data-location="utility_bar" data-label="Try a class free">Try a class free</a>
+    </span>
+    <span class="flex flex-wrap gap-x-5 gap-y-2">
+      {utilityNav.map((l) => <a href={l.href} class="hidden md:inline !text-white no-underline hover:underline">{l.label}</a>)}
+      <a href={`tel:${site.phone.tel}`} class="hidden md:inline !text-white no-underline hover:underline" data-track="tel_click" data-location="utility_bar">{site.phone.display}</a>
+      <a href={routes.login} class="!text-white no-underline hover:underline font-bold">Student login</a>
     </span>
   </div>
 </div>
 
 <header class="sticky top-0 z-40 bg-white border-b border-divider" data-header>
-  <nav class="container-page py-3.5 md:py-[18px] flex items-center justify-between gap-4 lg:gap-8" aria-label="Main">
-    <a href="#top" class="flex items-center gap-3 no-underline !text-ink min-w-0">
+  <nav class="container-page py-3.5 xl:py-4 flex items-center justify-between gap-4 xl:gap-6" aria-label="Main">
+    <a href="/" class="flex items-center gap-3 no-underline !text-ink min-w-0 xl:shrink-0">
       <span class="shrink-0 size-10 rounded-[10px] bg-teal text-white flex items-center justify-center font-extrabold text-base" aria-hidden="true">NP</span>
       <span class="flex flex-col leading-[1.15] min-w-0">
         <span class="font-extrabold text-[17px] sm:text-lg">{site.name}</span>
@@ -36,15 +37,26 @@ const navLinks = [
       </span>
     </a>
 
-    <ul class="hidden lg:flex flex-wrap gap-x-7 gap-y-2 text-[15px] font-semibold list-none m-0 p-0">
-      {navLinks.map((l) => <li><a href={l.href} class="!text-ink no-underline hover:!text-teal">{l.label}</a></li>)}
+    <ul class="hidden xl:flex gap-x-4 text-[15px] font-semibold list-none m-0 p-0 items-center">
+      {mainNav.map((l) => (
+        <li>
+          <a
+            href={l.href}
+            aria-current={l.key === active ? 'page' : undefined}
+            class:list={[
+              'block no-underline py-2.5 border-b-2 whitespace-nowrap',
+              l.key === active ? '!text-teal border-teal' : '!text-ink border-transparent hover:!text-teal',
+            ]}
+          >{l.label}</a>
+        </li>
+      ))}
     </ul>
 
     <div class="flex items-center gap-2 shrink-0">
-      <a href="#exams" class="btn btn-primary text-[15px] px-5 hidden sm:inline-flex" data-track="cta_click" data-location="header" data-label="Find my review">Find my review</a>
+      <a href="/#exams" class="btn btn-primary text-[15px] px-5 hidden sm:inline-flex" data-track="cta_click" data-location="header" data-label="Find my review">Find my review</a>
       <button
         type="button"
-        class="lg:hidden inline-flex items-center justify-center size-11 rounded-[10px] border border-card-border bg-white cursor-pointer"
+        class="xl:hidden inline-flex items-center justify-center size-11 rounded-[10px] border border-card-border bg-white cursor-pointer"
         aria-expanded="false"
         aria-controls="mobile-menu"
         aria-label="Open menu"
@@ -56,12 +68,25 @@ const navLinks = [
     </div>
   </nav>
 
-  <div id="mobile-menu" class="lg:hidden border-t border-divider bg-white" hidden data-menu>
-    <ul class="container-page py-4 flex flex-col list-none m-0">
-      {navLinks.map((l) => (
-        <li><a href={l.href} class="block py-3 text-lg font-semibold !text-ink no-underline border-b border-divider">{l.label}</a></li>
-      ))}
-      <li><a href={`tel:${site.phone.tel}`} class="block py-3 text-lg font-semibold no-underline" data-track="tel_click" data-location="mobile_menu">Call {site.phone.display}</a></li>
-    </ul>
+  <div id="mobile-menu" class="xl:hidden border-t border-divider bg-white max-h-[calc(100dvh-72px)] overflow-y-auto" hidden data-menu>
+    <div class="container-page py-4 flex flex-col gap-4">
+      <ul class="flex flex-col list-none m-0 p-0">
+        {mainNav.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              aria-current={l.key === active ? 'page' : undefined}
+              class:list={['block py-3 text-lg font-semibold no-underline border-b border-divider', l.key === active ? '!text-teal' : '!text-ink']}
+            >{l.label}</a>
+          </li>
+        ))}
+      </ul>
+      <ul class="flex flex-col list-none m-0 p-0 text-base font-semibold">
+        {utilityNav.map((l) => <li><a href={l.href} class="block py-2.5 !text-body-muted no-underline">{l.label}</a></li>)}
+        <li><a href={routes.login} class="block py-2.5 !text-body-muted no-underline">Student login</a></li>
+        <li><a href={`tel:${site.phone.tel}`} class="block py-2.5 no-underline" data-track="tel_click" data-location="mobile_menu">Call {site.phone.display}</a></li>
+      </ul>
+      <a href="/#exams" class="btn btn-primary text-base sm:hidden" data-track="cta_click" data-location="mobile_menu" data-label="Find my review">Find my review</a>
+    </div>
   </div>
 </header>

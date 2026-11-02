@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import PlanCard from '../components/PlanCard.astro';
+import { catalog as c } from '../config/catalog';
+import { routes } from '../config/site';
+import { courseSchema } from '../config/schema';
+
+const description = `Board-style practice question banks for PMHNP, FNP/AGNP, AGACNP and NCLEX, organized by domain with detailed rationales. From ${c.qbankFrom}.`;
+const domains = ['I. Assessment', 'II. Diagnosis', 'III. Planning', 'IV. Implementation', 'V. Evaluation'];
+// Question count is from the owner's own Q-bank artwork on the current site. Add access length when confirmed.
+const bullets = ['250–500 questions with rationales'];
+const plans = [
+  { label: 'PMHNP plans', href: `${routes.pmhnp}#plans` },
+  { label: 'FNP/AGNP plans', href: `${routes.fnp}#plans` },
+  { label: 'AGACNP plans', href: `${routes.agacnp}#plans` },
+  { label: 'NCLEX plans', href: `${routes.nclex}#nclex` },
+];
+---
+<Base
+  title="Question Banks — PMHNP, FNP/AGNP, AGACNP & NCLEX | NP Certification Academy"
+  description={description}
+  active="qbank"
+  crumb="Question banks"
+  schema={[courseSchema('Board Exam Question Banks', description, routes.qbank)]}
+>
+  <PageHero
+    crumb="Question banks"
+    title="Board-style practice questions, organized by domain."
+    sub={`Practice where you're weakest, with rationales that explain why each answer is right or wrong. Question banks start at ${c.qbankFrom}.`}
+  >
+    <ul class="flex flex-wrap gap-2.5 list-none m-0 p-0" aria-label="Exam domains">
+      {domains.map((d) => <li class="bg-white rounded-full px-3.5 py-2 text-sm font-semibold">{d}</li>)}
+    </ul>
+  </PageHero>
+
+  <section class="section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Choose your question bank</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-5">
+        <PlanCard product={c.qbankPmhnp} title="PMHNP" meta="ANCC & AANP" bullets={bullets} cta="Buy PMHNP Q bank" featured badge="" size="md" location="qbank" />
+        <PlanCard product={c.qbankFnp} title="FNP / AGNP" meta="ANCC & AANP" bullets={bullets} cta="Buy FNP/AGNP Q bank" size="md" location="qbank" />
+        <PlanCard product={c.qbankAgacnp} title="AGACNP" meta="ANCC & AACN" bullets={bullets} cta="Buy AGACNP Q bank" size="md" location="qbank" />
+        <PlanCard
+          id="nclex"
+          product={c.qbankNclexRn}
+          title="NCLEX RN / PN"
+          meta="Next Generation format"
+          bullets={bullets}
+          cta="Buy NCLEX RN Q bank"
+          alt={{ label: 'Taking the PN?', product: c.qbankNclexPn, cta: 'Buy the PN bank' }}
+          size="md"
+          location="qbank"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-surface section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-wrap gap-10 items-center">
+      <div class="flex-[1_1_420px] min-w-0 flex flex-col gap-3.5">
+        <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Want questions and teaching?</h2>
+        <p class="m-0 text-[17px] leading-relaxed text-body-muted">Questions are included in our Premium and Comprehensive reviews — the FNP/AGNP Comprehensive includes 500.</p>
+      </div>
+      <div class="flex-[1_1_420px] min-w-0 flex flex-wrap gap-3">
+        {plans.map((p) => <a href={p.href} class="btn btn-dark text-base px-[22px] min-h-12">{p.label}</a>)}
+      </div>
+    </div>
+  </section>
+</Base>

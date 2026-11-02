@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import BookButton from '../components/BookButton.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { catalog as c, type Product } from '../config/catalog';
+import { routes, links } from '../config/site';
+import { courseSchema } from '../config/schema';
+
+const description =
+  'Exam in a few weeks? Accelerated live Last Minute Review for PMHNP (ANCC & AANP), FNP/AGNP and AGACNP with Dr. Kehinde Elisha — high-yield content and timed practice.';
+
+/** `length: null` hides the length and shows only "live with Dr. K". */
+const options: { track: string; title: string; product: Product; length: string | null; detail?: string; cta: string }[] = [
+  { track: 'PMHNP · ANCC', title: 'Last Minute Review', product: c.pmhnpLmrAncc, length: null, cta: 'Book ANCC LMR' },
+  { track: 'PMHNP · AANP', title: 'Last Minute Review', product: c.pmhnpLmrAanp, length: '3 hours', cta: 'Book AANP LMR' },
+  { track: 'FNP / AGNP · ANCC & AANP', title: 'Fast Track Intensive', product: c.fnpIntensive, length: '2 days live', detail: 'LMR + 200 questions', cta: 'Book FNP fast track' },
+  { track: 'AGACNP · ANCC & AACN', title: 'Fast Track', product: c.agacnpFastTrack, length: '4 weeks', detail: '20 hours live', cta: 'Book AGACNP fast track' },
+];
+const metaFor = (o: (typeof options)[number]) =>
+  o.detail ? `${o.length} · ${o.detail}` : [o.length, 'live with Dr. K'].filter(Boolean).join(' · ');
+---
+<Base
+  title="Last Minute Review — PMHNP, FNP/AGNP & AGACNP | NP Certification Academy"
+  description={description}
+  active="lmr"
+  crumb="Last Minute Review"
+  schema={[courseSchema('Last Minute Board Review', description, routes.lmr, options.map((o) => o.product))]}
+>
+  <PageHero
+    dark
+    crumb="Last Minute Review"
+    badge="Exam coming up fast"
+    title="Exam in a few weeks? Spend your time on what's most likely to be tested."
+    sub="Accelerated, live review with Dr. Kehinde Elisha — high-yield content, exam strategy and timed practice, in exam-domain order."
+  />
+
+  <section class="section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Pick your exam</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-5">
+        {options.map((o) => (
+          <div class="border border-card-border rounded-[18px] p-7 flex flex-col gap-3">
+            <span class="text-[13px] font-bold text-teal-dark">{o.track}</span>
+            <h3 class="m-0 text-[21px] font-extrabold">{o.title}</h3>
+            {o.product.price && <span class="text-[30px] font-extrabold">{o.product.price}</span>}
+            <span class="text-[15px] text-body-muted grow">{metaFor(o)}</span>
+            <BookButton product={o.product} label={o.cta} location="lmr_options" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-surface section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+      <div class="bg-white rounded-[18px] p-[30px] flex flex-col gap-3.5">
+        <h2 class="m-0 text-[21px] font-extrabold">A good fit if you're…</h2>
+        <ul class="m-0 pl-5 text-base leading-[1.9] text-body-muted"><li>A recent graduate testing soon</li><li>A repeat test-taker who knows the content</li><li>Looking to sharpen strategy and timing</li></ul>
+      </div>
+      <div class="bg-white rounded-[18px] p-[30px] flex flex-col gap-3.5">
+        <h2 class="m-0 text-[21px] font-extrabold">Choose a full course if you're…</h2>
+        <ul class="m-0 pl-5 text-base leading-[1.9] text-body-muted"><li>Out of school for more than 2 years</li><li>Starting your review from scratch</li><li>Needing content and questions together</li></ul>
+        <a href={`${routes.pmhnp}#plans`} class="font-bold text-base self-start">See full courses →</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    tone="tint"
+    title="Study with others who test soon"
+    text="Join our WhatsApp community for reminders, tips and support."
+    cta={{ label: 'Join the community', href: links.whatsapp }}
+    location="lmr_cta"
+  />
+</Base>

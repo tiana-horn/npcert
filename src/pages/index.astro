@@ -1,12 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
 import TrialForm from '../components/TrialForm.astro';
 import Check from '../components/Check.astro';
 import {
-  site, hero, stats, photos, links, exams, formats, testimonials, sisterOrgs, faqs, summit,
+  site, hero, stats, photos, routes, exams, formats, testimonials, sisterOrgs, faqs, summit,
 } from '../config/site';
-import { buildSchema } from '../config/schema';
+import { catalog } from '../config/catalog';
+import { homeSchema } from '../config/schema';
 
 const proof = [
   { value: stats.yearsExperience, label: 'clinical & teaching experience' },
@@ -16,7 +16,7 @@ const proof = [
 ].filter(Boolean) as { value: string; label: string }[];
 
 const steps = [
-  { n: '01', title: 'Join a live cohort', body: 'Two live Zoom classes a week with Dr. K. Ask questions in real time; replays included.' },
+  { n: '01', title: 'Join a live cohort', body: 'Two live Zoom classes a week with Dr. K. Ask questions in real time — live or hybrid schedule.' },
   { n: '02', title: 'Practice like the real exam', body: 'Board-style question bank and practice exams with rationales, mapped to the test outline.' },
   { n: '03', title: 'Get mentored to the finish', body: 'Personal check-ins, a peer community, and a 3-week upgrade if you need more time.' },
 ];
@@ -29,13 +29,8 @@ const styles = [
 ];
 
 const visibleFaqs = faqs.filter((f) => f.a) as { q: string; a: string }[];
-const year = new Date().getFullYear();
 ---
-<Base schema={buildSchema()}>
-  <div id="top"></div>
-  <Header />
-
-  <main id="main">
+<Base active="home" schema={homeSchema()}>
     <!-- Hero -->
     <section class="bg-surface" data-hero>
       <div class="container-page pt-12 pb-14 md:pt-[72px] md:pb-20 flex flex-wrap gap-12 items-center">
@@ -109,9 +104,9 @@ const year = new Date().getFullYear();
         </div>
         <div class="flex flex-wrap gap-x-7 gap-y-3 text-base font-semibold">
           <span class="text-body-muted font-medium">Exam in under 3 weeks?</span>
-          <a href={links.lastMinuteReview}>Last Minute Review for PMHNP →</a>
-          <a href={links.questionBank}>Question bank only →</a>
-          <a href={links.books}>Books for PMHNP &amp; FNP →</a>
+          <a href={routes.lmr}>Last Minute Review →</a>
+          <a href={routes.qbank}>Question banks{catalog.qbankFrom && ` from ${catalog.qbankFrom}`} →</a>
+          <a href={routes.books}>Books &amp; self-paced courses →</a>
         </div>
       </div>
     </section>
@@ -180,7 +175,7 @@ const year = new Date().getFullYear();
           {formats.map((f) => (
             <div class:list={['rounded-[18px] p-[30px] flex flex-col gap-4', f.featured ? 'border-2 border-teal bg-teal-wash' : 'border border-card-border bg-white']}>
               <h3 class="m-0 text-xl font-extrabold">{f.name}</h3>
-              {f.price && <span class="text-4xl font-extrabold">{f.price}</span>}
+              {f.price && <span class="text-4xl font-extrabold">{f.price}{f.priceNote && <span class="text-base font-semibold text-body-muted"> {f.priceNote}</span>}</span>}
               <ul class="m-0 pl-5 text-[15px] leading-[1.9] text-body-muted grow">
                 {f.bullets.map((b) => <li>{b}</li>)}
               </ul>
@@ -195,7 +190,7 @@ const year = new Date().getFullYear();
             </div>
           ))}
         </div>
-        <p class="m-0 text-[15px] text-body-muted">Returning student with an expired review? <a href={links.pmhnpUpgrade} class="font-bold" data-track="checkout_start" data-track-name="pmhnp-upgrade" data-location="formats">Add the 3-week PMHNP Upgrade Package →</a></p>
+        <p class="m-0 text-[15px] text-body-muted">Returning student with an expired review? <a href={catalog.pmhnpUpgrade.href!} class="font-bold" data-track="checkout_start" data-track-name={catalog.pmhnpUpgrade.name} data-location="formats">Add the 3-week PMHNP Upgrade Package →</a></p>
       </div>
     </section>
 
@@ -251,32 +246,11 @@ const year = new Date().getFullYear();
         <a href={summit.href} class="btn btn-dark text-[15px]" data-track="cta_click" data-location="summit" data-label="Get summit details">Get summit details</a>
       </div>
     </section>
-  </main>
-
-  <footer class="bg-ink text-muted-on-dark pt-14 pb-28 lg:pb-8 px-6 text-[15px] on-dark">
-    <div class="max-w-[1200px] mx-auto flex flex-col gap-9">
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
-        <div class="flex flex-col gap-2.5"><span class="text-white font-extrabold text-[17px]">{site.name}</span><address class="not-italic">{site.address.street}<br />{site.address.city}, {site.address.region} {site.address.zip}</address></div>
-        <nav class="flex flex-col gap-2.5" aria-label="Exam reviews"><span class="text-white font-bold">Exam reviews</span>{exams.map((e) => <a href={e.href} class="!text-muted-on-dark hover:!text-white">{e.name.replace(' RN / PN', '')}</a>)}</nav>
-        <nav class="flex flex-col gap-2.5" aria-label="Students"><span class="text-white font-bold">Students</span><a href={links.studentLogin} class="!text-muted-on-dark hover:!text-white">Login to class</a><a href={links.allSchedule} class="!text-muted-on-dark hover:!text-white">Schedule</a><a href={links.questionBank} class="!text-muted-on-dark hover:!text-white">Question bank</a><a href={links.ceMentorship} class="!text-muted-on-dark hover:!text-white">CEUs &amp; mentorship</a></nav>
-        <div class="flex flex-col gap-2.5"><span class="text-white font-bold">Contact</span><a href={`tel:${site.phone.tel}`} class="!text-muted-on-dark hover:!text-white" data-track="tel_click" data-location="footer">{site.phone.display}</a><a href={`mailto:${site.email}`} class="!text-muted-on-dark hover:!text-white break-all">{site.email}</a></div>
-      </div>
-      <div class="border-t border-footer-rule pt-6 flex flex-col gap-2 text-[13px] text-footer-fine">
-        <span>Not affiliated with AANP, ANCC or any certification body. Continuing nursing education approved by the Kansas State Board of Nursing.</span>
-        <span>© {year} {site.legalName}. All rights reserved.</span>
-      </div>
-    </div>
-  </footer>
-
   <!-- Mobile sticky bar: appears after the hero -->
-  <div class="lg:hidden fixed inset-x-0 bottom-0 z-30 bg-white border-t border-divider px-4 py-3 flex gap-3 translate-y-full transition-transform data-[visible=true]:translate-y-0 shadow-[0_-6px_20px_rgba(11,31,58,0.08)]" data-sticky-bar aria-hidden="true">
+  <div slot="after" class="xl:hidden fixed inset-x-0 bottom-0 z-30 bg-white border-t border-divider px-4 py-3 flex gap-3 translate-y-full transition-transform data-[visible=true]:translate-y-0 shadow-[0_-6px_20px_rgba(11,31,58,0.08)]" data-sticky-bar aria-hidden="true">
     <a href="#exams" class="btn btn-primary flex-1 text-base" tabindex="-1" data-track="cta_click" data-location="sticky_bar" data-label="Choose your exam">Choose your exam</a>
     <a href={`tel:${site.phone.tel}`} class="btn btn-secondary px-0 w-12" tabindex="-1" aria-label={`Call ${site.phone.display}`} data-track="tel_click" data-location="sticky_bar">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
     </a>
   </div>
-
-  <script>
-    import '../scripts/main';
-  </script>
 </Base>

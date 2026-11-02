@@ -1,0 +1,108 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import PlanCard from '../components/PlanCard.astro';
+import BookButton from '../components/BookButton.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { catalog as c, type Product } from '../config/catalog';
+import { routes, site } from '../config/site';
+import { courseSchema } from '../config/schema';
+
+const description =
+  'Next Generation NCLEX RN/PN review with weekly live Zoom classes, a self-paced crash course, plus CCRN and ANCC PMH-RN specialty certification reviews.';
+
+const certs: { product: Product; title: string; text: string; cta: string; comingSoon?: boolean }[] = [
+  { product: c.ccrn, title: 'CCRN', text: '4 weeks · follows the CCRN exam content outline. Taught by a 12-year ICU nurse.', cta: 'Book CCRN review' },
+  { product: c.pmhRn, title: 'ANCC PMH-RN', text: '3 days · psychiatric–mental health nursing, mapped to the ANCC outline.', cta: 'Book PMH-RN review' },
+  { product: c.nurseExecutive, title: 'Nurse Executive', text: '3 days · follows the exam content outline.', cta: 'Join the waitlist', comingSoon: true },
+];
+---
+<Base
+  title="NCLEX RN/PN Review & RN Certifications (CCRN, PMH-RN) | NP Certification Academy"
+  description={description}
+  active="nclex"
+  crumb="NCLEX & other certifications"
+  schema={[
+    courseSchema('Next Generation NCLEX RN/PN Review', description, routes.nclex, [c.nclexPremium, c.nclexSelfPaced]),
+    courseSchema('CCRN Exam Review', 'CCRN exam review taught by a 12-year ICU nurse.', `${routes.nclex}#certs`, [c.ccrn]),
+  ]}
+>
+  <PageHero
+    crumb="NCLEX & other certifications"
+    badge="NCLEX RN/PN · CCRN · PMH-RN"
+    title="Next Generation NCLEX review, plus specialty RN certifications."
+    sub="Connect with an instructor every week on Zoom. Every course follows the official exam content outline."
+    ctas={[
+      { label: 'NCLEX options', href: '#nclex' },
+      { label: 'Specialty certifications', href: '#certs' },
+    ]}
+  />
+
+  <section id="nclex" class="section-y-80 px-6 scroll-mt-24">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="NCLEX RN / PN · 2026" title="Choose your NCLEX review" />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(270px,100%),1fr))] gap-5">
+        <PlanCard
+          product={c.nclexPremium}
+          title="Premium Plan"
+          meta="8 weeks · live Zoom lectures"
+          bullets={['Structured, all-inclusive study plan', 'Weekly time with your instructor', 'Clinical judgment case practice']}
+          cta="Reserve my seat"
+          featured
+          size="md"
+          location="nclex_plans"
+        />
+        <PlanCard
+          product={c.nclexSelfPaced}
+          title="Self-Paced Crash Course"
+          meta="4 weeks of access"
+          bullets={['300-question bank with full rationales', 'Last Minute Review included', 'Study on your own schedule']}
+          cta="Start self-paced"
+          size="md"
+          location="nclex_plans"
+        />
+        <PlanCard
+          product={c.nclexUpgrade}
+          title="NCLEX Upgrade"
+          meta="Current or returning students only"
+          bullets={['Extension of your expired review', '2 classes a week', 'Content reinforcement, LMR and strategy review']}
+          cta="Extend my review"
+          size="md"
+          location="nclex_plans"
+        />
+      </div>
+      <p class="m-0 text-[15px] text-body-muted">Just need practice? <a href={`${routes.qbank}#nclex`} class="font-bold">Get the NCLEX question bank →</a></p>
+    </div>
+  </section>
+
+  <section id="certs" class="bg-surface section-y-80 px-6 scroll-mt-24">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="For practicing RNs" title="Specialty certification reviews" />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(270px,100%),1fr))] gap-5">
+        {certs.map((cert) => (
+          <div class:list={['bg-white rounded-[18px] p-7 flex flex-col gap-3', cert.comingSoon && 'border border-dashed border-input-border']}>
+            <div class="flex justify-between gap-2 items-center">
+              <h3 class="m-0 text-xl font-extrabold">{cert.title}</h3>
+              {cert.comingSoon && <span class="bg-teal-tint text-teal-dark text-xs font-bold px-2.5 py-[5px] rounded-md">COMING SOON</span>}
+            </div>
+            {cert.product.price && <span class="text-[30px] font-extrabold">{cert.product.price}</span>}
+            <span class="text-[15px] text-body-muted grow">{cert.text}</span>
+            {cert.comingSoon ? (
+              <a href="/#trial" class="font-bold text-base" data-track="cta_click" data-location="nclex_certs" data-label="Join the waitlist">Join the waitlist →</a>
+            ) : (
+              <BookButton product={cert.product} label={cert.cta} variant="link" location="nclex_certs" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Not sure where to start?"
+    text="Call us and we'll match you to the right review."
+    cta={{ label: `Call ${site.phone.display}`, href: `tel:${site.phone.tel}` }}
+    location="nclex_cta"
+  />
+</Base>

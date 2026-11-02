@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site header</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #0B1F3A; background: #FFFFFF; width: 100%">
+<div style="background: #0B1F3A; color: #FFFFFF; font-size: 14px">
+<div style="max-width: 1200px; margin: 0 auto; padding: 10px 24px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; align-items: center">
+<span style="font-weight: 600">Now enrolling 2026–2027 cohorts · <a href="Main.dc.html#trial" style="color: #F5B544; text-decoration: none">Try a class free</a></span>
+<span style="display: flex; gap: 8px 20px; flex-wrap: wrap">
+<a href="Summit.dc.html" style="color: #FFFFFF; text-decoration: none">Summit 2026</a>
+<a href="Mentorship.dc.html" style="color: #FFFFFF; text-decoration: none">Mentorship &amp; CEUs</a>
+<a href="Books.dc.html" style="color: #FFFFFF; text-decoration: none">Books</a>
+<a href="tel:13479016037" style="color: #FFFFFF; text-decoration: none">1-347-901-6037</a>
+<a href="Login.dc.html" style="color: #FFFFFF; text-decoration: none; font-weight: 700">Student login</a>
+</span>
+</div>
+</div>
+<header style="border-bottom: 1px solid #E3E8EF; background: #FFFFFF">
+<nav style="max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; justify-content: space-between" aria-label="Main">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #0B1F3A">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: #0E6E6B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px">NP</span>
+<span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-weight: 800; font-size: 18px">NP Certification Academy</span><span style="font-size: 12px; color: #4A5568; font-weight: 500">Board review by Dr. Kehinde Elisha</span></span>
+</a>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; font-weight: 600; align-items: center">
+<sc-for list="{{links}}" as="l" hint-placeholder-count="7">
+<sc-if value="{{l.on}}" hint-placeholder-val="{{false}}"><a href="{{l.href}}" aria-current="page" style="color: #0E6E6B; text-decoration: none; padding: 10px 0; border-bottom: 2px solid #0E6E6B">{{l.label}}</a></sc-if>
+<sc-if value="{{l.off}}" hint-placeholder-val="{{true}}"><a href="{{l.href}}" style="color: #0B1F3A; text-decoration: none; padding: 10px 0; border-bottom: 2px solid transparent">{{l.label}}</a></sc-if>
+</sc-for>
+</div>
+<a href="Main.dc.html#exams" style="background: #F5B544; color: #0B1F3A; font-weight: 700; font-size: 15px; padding: 12px 20px; border-radius: 10px; text-decoration: none; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">Find my review</a>
+</nav>
+</header>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["home","pmhnp","fnp","agacnp","nclex","lmr","qbank","schedule","other"],"default":"home"},"$preview":{"width":1440,"height":130}}'>
+class Component extends DCLogic {
+renderVals() {
+const active = this.props.active ?? 'home';
+const items = [
+{ key: 'pmhnp', label: 'PMHNP', href: 'PMHNP.dc.html' },
+{ key: 'fnp', label: 'FNP / AGNP', href: 'FNP.dc.html' },
+{ key: 'agacnp', label: 'AGACNP', href: 'AGACNP.dc.html' },
+{ key: 'nclex', label: 'NCLEX & certs', href: 'NCLEX.dc.html' },
+{ key: 'lmr', label: 'Last Minute Review', href: 'LastMinute.dc.html' },
+{ key: 'qbank', label: 'Question banks', href: 'QBank.dc.html' },
+{ key: 'schedule', label: 'Schedule', href: 'Schedule.dc.html' }
+];
+return { links: items.map((i) => ({ ...i, on: i.key === active, off: i.key !== active })) };
+}
+}
+</script>
+</body>
+</html>

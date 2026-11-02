@@ -1,0 +1,31 @@
+---
+interface Props {
+  title: string;
+  text?: string;
+  cta: { label: string; href: string };
+  tone?: 'ink' | 'tint';
+  /** Remove top padding when it follows a padded section. */
+  flushTop?: boolean;
+  location?: string;
+}
+const { title, text, cta, tone = 'ink', flushTop = false, location = 'cta_band' } = Astro.props;
+const isTel = cta.href.startsWith('tel:');
+---
+<section class:list={['px-6 pb-14 md:pb-20', flushTop ? 'pt-0' : 'pt-14 md:pt-20']}>
+  <div class:list={[
+    'max-w-[1100px] mx-auto rounded-3xl flex flex-wrap gap-6 items-center justify-between',
+    tone === 'ink' ? 'bg-ink text-white on-dark p-[clamp(28px,5vw,56px)]' : 'bg-teal-tint p-[clamp(28px,5vw,48px)]',
+  ]}>
+    <div class="flex flex-col gap-2 flex-[1_1_380px] min-w-0">
+      <h2 class:list={['m-0 font-extrabold', tone === 'ink' ? 'text-[clamp(26px,3vw,34px)]' : 'text-[clamp(24px,3vw,32px)]']}>{title}</h2>
+      {text && <span class:list={['text-[17px]', tone === 'ink' ? 'text-muted-on-dark' : 'text-teal-deep']}>{text}</span>}
+    </div>
+    <a
+      href={cta.href}
+      class:list={['btn text-[17px] min-h-[52px] rounded-xl px-[26px]', tone === 'ink' ? 'btn-primary' : 'btn-dark']}
+      data-track={isTel ? 'tel_click' : 'cta_click'}
+      data-location={location}
+      data-label={cta.label}
+    >{cta.label}</a>
+  </div>
+</section>

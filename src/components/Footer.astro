@@ -1,0 +1,62 @@
+---
+import { site, routes, links, social } from '../config/site';
+
+const linkCls = '!text-muted-on-dark hover:!text-white';
+const columns = [
+  {
+    title: 'Exam reviews',
+    items: [
+      { label: 'PMHNP (ANCC & AANP)', href: routes.pmhnp },
+      { label: 'FNP / AGNP', href: routes.fnp },
+      { label: 'AGACNP (ANCC & AACN)', href: routes.agacnp },
+      { label: 'NCLEX & other certs', href: routes.nclex },
+      { label: 'Last Minute Review', href: routes.lmr },
+    ],
+  },
+  {
+    title: 'Students',
+    items: [
+      { label: 'Login to class', href: routes.login },
+      { label: 'All schedules', href: routes.schedule },
+      { label: 'Question banks', href: routes.qbank },
+      { label: 'Books & self-paced', href: routes.books },
+      { label: 'WhatsApp community', href: links.whatsapp },
+    ],
+  },
+  {
+    title: 'Keep growing',
+    items: [
+      { label: 'Bridge, mentorship & CEUs', href: routes.mentorship },
+      { label: 'Clinician Advancement Summit 2026', href: routes.summit },
+      { label: 'Confident Prescriber', href: links.confidentPrescriber },
+    ],
+  },
+];
+const year = new Date().getFullYear();
+---
+<footer class="bg-ink text-muted-on-dark pt-14 pb-28 xl:pb-8 px-6 text-[15px] on-dark">
+  <div class="max-w-[1200px] mx-auto flex flex-col gap-9">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
+      <div class="flex flex-col gap-2.5">
+        <span class="text-white font-extrabold text-[17px]">{site.name}</span>
+        <address class="not-italic">{site.address.street}<br />{site.address.city}, {site.address.region} {site.address.zip}</address>
+        <a href={`tel:${site.phone.tel}`} class={linkCls} data-track="tel_click" data-location="footer">{site.phone.display}</a>
+        <a href={`mailto:${site.email}`} class={linkCls + ' break-all'}>{site.email}</a>
+        <span class="text-[13px]">We reply within 48 hours.</span>
+      </div>
+      {columns.map((c) => (
+        <nav class="flex flex-col gap-2.5" aria-label={c.title}>
+          <span class="text-white font-bold">{c.title}</span>
+          {c.items.map((i) => <a href={i.href} class={linkCls}>{i.label}</a>)}
+        </nav>
+      ))}
+    </div>
+    <div class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+      {social.map((s) => <a href={s.href} class="!text-white hover:!text-amber" rel="noopener">{s.label}</a>)}
+    </div>
+    <div class="border-t border-footer-rule pt-6 flex flex-col gap-2 text-[13px] text-footer-fine">
+      <span>Not affiliated with AANP, ANCC, AACN or any certification body. Continuing nursing education approved by the Kansas State Board of Nursing.</span>
+      <span>© {year} {site.legalName} · Kehinde Elisha's Learning Institute (K.E.L.I). All rights reserved.</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import PlanCard from '../components/PlanCard.astro';
+import { catalog as c } from '../config/catalog';
+import { routes, links, site } from '../config/site';
+import { courseSchema } from '../config/schema';
+
+const description =
+  'Bridge & Mentorship Program and Clinician Growth Package for new nurse practitioners: weekly Zoom mentorship with Dr. Kehinde Elisha and up to 25 CEUs.';
+
+/** Set when the owner confirms how CEU certificates are issued, e.g. 'by email within 2 weeks of completion'. */
+const ceuCertificates: string | null = null;
+---
+<Base
+  title="Bridge, Mentorship & CEUs for New NPs | NP Certification Academy"
+  description={description}
+  crumb="Bridge, mentorship & CEUs"
+  schema={[courseSchema('Bridge & Mentorship for New Nurse Practitioners', description, routes.mentorship, [c.bridge, c.growth])]}
+>
+  <PageHero
+    crumb="Bridge, mentorship & CEUs"
+    badge="After you pass"
+    title="You passed your boards. Now become a confident practitioner."
+    sub="Weekly Zoom mentorship with Dr. Kehinde Elisha to prepare for your first NP role or your own practice — and earn CEUs while you do it."
+    ctas={[{ label: 'Compare programs', href: '#programs' }]}
+  />
+
+  <section id="programs" class="section-y-80 px-6 scroll-mt-24">
+    <div class="max-w-[1000px] mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+      <PlanCard
+        product={c.bridge}
+        meta="6 months · Tuesday & Saturday classes"
+        bullets={["For new NPs who've passed their boards", 'Weekly time with an instructor on Zoom', 'Prepare for a new job or starting a business', '<b>25 CEUs</b>']}
+        cta="Join the Bridge Program"
+        featured
+        badge=""
+        location="mentorship"
+      />
+      <PlanCard
+        product={c.growth}
+        meta="3 months · Tuesday & Thursday classes"
+        bullets={['Level up before a new role or business', 'Weekly instructor time on Zoom', '<b>20 CEUs</b>']}
+        cta="Start Growth Package"
+        location="mentorship"
+      />
+    </div>
+  </section>
+
+  <section class="bg-ink text-white section-y-80 px-6 on-dark">
+    <div class="max-w-[1200px] mx-auto flex flex-wrap gap-10 items-center">
+      <div class="flex-[1_1_460px] min-w-0 flex flex-col gap-3.5">
+        <span class="eyebrow !text-amber">Confident Prescriber</span>
+        <h2 class="m-0 text-[clamp(28px,3.4vw,40px)] leading-[1.15] font-extrabold">Prescribing support, every week</h2>
+        <p class="m-0 text-[17px] leading-relaxed text-muted-on-dark">Real-time collaboration and weekly Zoom meetings for nurse practitioners to build prescribing confidence and clinical decision-making.</p>
+      </div>
+      <a href={links.confidentPrescriber} class="btn btn-primary text-[17px] min-h-[52px] rounded-xl px-[26px]" rel="noopener" data-track="cta_click" data-location="mentorship" data-label="Visit Confident Prescriber">Visit Confident Prescriber</a>
+    </div>
+  </section>
+
+  <section class="section-y-80 px-6">
+    <div class="max-w-[820px] mx-auto flex flex-col gap-3.5">
+      <h2 class="m-0 text-[clamp(26px,3vw,34px)] font-extrabold">About our continuing education</h2>
+      <p class="m-0 text-[17px] leading-[1.65] text-body-muted">
+        Our continuing nursing education is approved by the Kansas State Board of Nursing.
+        {site.cneProviderNumber && ` Provider number: ${site.cneProviderNumber}.`}
+        {ceuCertificates && ` CEU certificates are issued ${ceuCertificates}.`}
+      </p>
+      <p class="m-0 text-[17px] leading-[1.65] text-body-muted">Questions? Call <a href={`tel:${site.phone.tel}`} class="font-bold" data-track="tel_click" data-location="mentorship">{site.phone.display}</a> — we reply within 48 hours.</p>
+    </div>
+  </section>
+</Base>

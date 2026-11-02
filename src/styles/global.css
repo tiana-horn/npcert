@@ -55,6 +55,7 @@
 
 @utility container-page { max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
 @utility section-y { padding-block: 56px; @media (width >= 48rem) { padding-block: 88px; } }
+@utility section-y-80 { padding-block: 56px; @media (width >= 48rem) { padding-block: 80px; } }
 @utility eyebrow { font-size: 14px; font-weight: 700; color: var(--color-teal-dark); text-transform: uppercase; letter-spacing: 0.06em; }
 @utility h2 { margin: 0; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.15; font-weight: 800; letter-spacing: -0.01em; }
 
