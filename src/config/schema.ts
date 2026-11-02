@@ -66,7 +66,7 @@ export function homeSchema(): object[] {
     jobTitle: 'Founder & lead instructor',
     description: 'FNP, PMHNP-BC, MSc Info, Legal Nurse Consultant',
     worksFor: { '@id': orgId },
-    ...(photos.portrait && { image: new URL(photos.portrait.src, site.url).toString() }),
+    ...(photos.portrait && { image: new URL(photos.portrait.src.src, site.url).toString() }),
   };
 
   const courses = exams.map((e) => courseSchema(`${e.name} Board Exam Review`, e.blurb, e.href));

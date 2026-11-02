@@ -3,7 +3,9 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import PlanCard from '../components/PlanCard.astro';
 import { catalog as c } from '../config/catalog';
-import { summit } from '../config/site';
+import { summit, photos } from '../config/site';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { summitSchema } from '../config/schema';
 
 /**
@@ -14,8 +16,8 @@ const details = {
   dates: null as string | null, // e.g. 'June 12–14, 2026'
   ceHours: null as number | null,
 };
-const speakers: { name: string; role: string; photo: { src: string; width: number; height: number } | null }[] = [
-  { name: 'Dr. Kehinde Elisha', role: 'FNP, PMHNP-BC · Founder, IACA & NP Certification Academy', photo: null },
+const speakers: { name: string; role: string; photo: ImageMetadata | null }[] = [
+  { name: 'Dr. Kehinde Elisha', role: 'FNP, PMHNP-BC · Founder, IACA & NP Certification Academy', photo: photos.portrait?.src ?? null },
 ];
 const agenda: { time: string; session: string }[] = [];
 const inPersonExtras: string[] = []; // e.g. 'Breakfast and lunch included'
@@ -56,7 +58,7 @@ const initials = (name: string) => name.replace(/^Dr\.\s*/, '').split(/\s+/).map
         {speakers.map((s) => (
           <div class="flex flex-col gap-2.5">
             {s.photo ? (
-              <img src={s.photo.src} alt={s.name} width={s.photo.width} height={s.photo.height} loading="lazy" decoding="async" class="w-full aspect-square object-cover rounded-2xl bg-placeholder" />
+              <Image src={s.photo} alt="" widths={[240, 400]} sizes="240px" class="w-full aspect-square object-cover rounded-2xl bg-placeholder" />
             ) : (
               <div class="rounded-2xl aspect-square bg-teal flex items-center justify-center" aria-hidden="true"><span class="text-white/90 font-extrabold text-6xl">{initials(s.name)}</span></div>
             )}

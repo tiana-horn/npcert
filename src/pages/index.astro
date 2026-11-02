@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import TrialForm from '../components/TrialForm.astro';
 import ReviewCarousel from '../components/ReviewCarousel.astro';
 import Check from '../components/Check.astro';
+import { Image } from 'astro:assets';
 import {
   site, hero, stats, googleReviews, photos, routes, exams, formats, testimonials, sisterOrgs, faqs, summit,
 } from '../config/site';
@@ -56,7 +57,7 @@ const visibleFaqs = faqs.filter((f) => f.a) as { q: string; a: string }[];
 
         <div class="flex-[1_1_360px] min-w-0 flex flex-col gap-4">
           {photos.hero ? (
-            <img src={photos.hero.src} alt={photos.hero.alt} width={photos.hero.width} height={photos.hero.height} fetchpriority="high" decoding="async" class="w-full aspect-[4/4.2] object-cover rounded-[20px] bg-placeholder" />
+            <Image src={photos.hero.src} alt={photos.hero.alt} widths={[360, 400]} sizes="(min-width: 1024px) 400px, 100vw" loading="eager" fetchpriority="high" class="w-full aspect-[4/4.2] object-cover object-[50%_30%] rounded-[20px] bg-placeholder" />
           ) : (
             <div class="rounded-[20px] aspect-[4/4.2] bg-teal flex items-center justify-center" aria-hidden="true">
               <span class="text-white/90 font-extrabold text-[clamp(72px,10vw,128px)] tracking-[-0.03em]">Dr. K</span>
@@ -208,7 +209,7 @@ const visibleFaqs = faqs.filter((f) => f.a) as { q: string; a: string }[];
     <section id="about" class:list={['section-y px-6', testimonials.length > 0 && 'bg-surface']}>
       <div class="max-w-[1200px] mx-auto flex flex-wrap gap-14 items-start">
         {photos.portrait ? (
-          <img src={photos.portrait.src} alt={photos.portrait.alt} width={photos.portrait.width} height={photos.portrait.height} loading="lazy" decoding="async" class="flex-[1_1_320px] min-w-0 w-full aspect-[4/5] object-cover rounded-[20px] bg-placeholder" />
+          <Image src={photos.portrait.src} alt="" widths={[320, 400]} sizes="(min-width: 1024px) 400px, 100vw" class="flex-[1_1_320px] min-w-0 w-full aspect-[4/5] object-cover object-[50%_30%] rounded-[20px] bg-placeholder" />
         ) : (
           <div class="flex-[1_1_320px] min-w-0 rounded-[20px] aspect-[4/5] bg-ink flex flex-col justify-end p-8 gap-2 on-dark" aria-hidden="true">
             <span class="text-amber text-sm font-bold uppercase tracking-[0.06em]">18+ years in practice</span>

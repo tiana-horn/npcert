@@ -6,7 +6,9 @@
  * Items marked "CONFIRM" were taken from the current Wix site and need sign-off.
  */
 
+import type { ImageMetadata } from 'astro';
 import { catalog } from './catalog';
+import drK from '../assets/dr-k.jpg';
 
 export const site = {
   url: 'https://www.npcertificationacademy.com',
@@ -103,10 +105,16 @@ Overall, I highly recommend studying with Dr. K. This program provides the struc
   }[],
 };
 
-/** Photos: put files in /public/images and set the path. Missing → monogram panel. */
+/**
+ * Photos: put the file in src/assets, import it, and set it here (Astro resizes and
+ * converts it to WebP at build time). Missing → monogram panel.
+ * The current photo is 400×400 — swap in a larger, professional shot when available.
+ */
+type Photo = { src: ImageMetadata; alt: string };
+const drKPhoto: Photo = { src: drK, alt: 'Dr. Kehinde Elisha, founder and lead instructor of NP Certification Academy' };
 export const photos = {
-  hero: null as null | { src: string; alt: string; width: number; height: number },
-  portrait: null as null | { src: string; alt: string; width: number; height: number },
+  hero: drKPhoto as Photo | null,
+  portrait: drKPhoto as Photo | null,
 };
 
 /** Internal routes (see reference/CLAUDE_CODE_HANDOVER_1.md §1b). */
