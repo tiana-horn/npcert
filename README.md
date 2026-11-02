@@ -21,11 +21,7 @@ Design source and requirements: [`reference/`](reference/) — `CLAUDE_CODE_HAND
 
 ### Deploys
 
-**Pushing to `main` deploys automatically** via GitHub Actions ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)): type-check → build → `wrangler deploy`. Pull requests run the same checks without deploying. Progress: the repo's **Actions** tab.
-
-One-time setup: the workflow needs a `CLOUDFLARE_API_TOKEN` repository secret (Cloudflare dashboard → My Profile → API Tokens → Create Token → **Edit Cloudflare Workers** template, scoped to this account).
-
-Manual deploy from your machine still works: `npx wrangler login` once, then `npm run deploy`.
+There's no CI: after committing to `main`, deploy from your machine with `npm run deploy` (`npx wrangler login` once first).
 
 ## Editing content
 
