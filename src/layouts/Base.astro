@@ -13,8 +13,10 @@ interface Props {
   /** Page name for the breadcrumb (Home / <crumb>). Omit on the homepage. */
   crumb?: string;
   schema?: object[];
+  /** Keep the page out of search results (e.g. the booking preview). */
+  noindex?: boolean;
 }
-const { title = site.title, description = site.description, active, crumb, schema = [] } = Astro.props;
+const { title = site.title, description = site.description, active, crumb, schema = [], noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).toString();
 const ogImage = site.ogImage ? new URL(site.ogImage, site.url).toString() : null;
 const allSchema = [orgSchema(), ...(crumb ? [breadcrumbSchema(crumb, canonical)] : []), ...schema];
@@ -26,7 +28,7 @@ const allSchema = [orgSchema(), ...(crumb ? [breadcrumbSchema(crumb, canonical)]
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#0B1F3A" />

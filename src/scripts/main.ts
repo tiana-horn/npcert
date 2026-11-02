@@ -152,6 +152,7 @@ if (carousel) {
   let hoverPaused = false;
 
   const show = (i: number) => {
+    slides[index].querySelector<HTMLButtonElement>('[data-expand][aria-expanded="true"]')?.click();
     index = (i + slides.length) % slides.length;
     slides.forEach((s, n) => {
       const active = n === index;
@@ -173,6 +174,20 @@ if (carousel) {
       toggleBtn.querySelector('[data-icon-play]')!.toggleAttribute('hidden', !userPaused);
     }
   };
+
+  // "Read full review": expand in place and stop rotating so the visitor can finish reading.
+  carousel.querySelectorAll<HTMLButtonElement>('[data-expand]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const slide = btn.closest('[data-slide]')!;
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      btn.textContent = open ? 'Show less' : 'Read full review';
+      slide.querySelector<HTMLElement>('[data-excerpt]')!.hidden = open;
+      slide.querySelector<HTMLElement>('[data-full]')!.hidden = !open;
+      if (open) userPaused = true;
+      sync();
+    }),
+  );
 
   carousel.querySelector('[data-prev]')?.addEventListener('click', () => show(index - 1));
   carousel.querySelector('[data-next]')?.addEventListener('click', () => show(index + 1));

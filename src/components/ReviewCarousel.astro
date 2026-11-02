@@ -22,7 +22,21 @@ const { items, url, count } = googleReviews;
             data-active={i === 0 ? 'true' : 'false'}
             aria-hidden={i === 0 ? undefined : 'true'}
           >
-            <blockquote class="m-0 text-[clamp(18px,2.2vw,22px)] leading-relaxed font-medium">“{r.quote}”</blockquote>
+            <blockquote class="m-0 text-[clamp(18px,2.2vw,22px)] leading-relaxed font-medium flex flex-col gap-3">
+              {r.excerpt ? (
+                <>
+                  <p class="m-0" data-excerpt>“{r.excerpt} …”</p>
+                  <div class="flex flex-col gap-3" data-full hidden>
+                    {r.quote.split('\n').map((para, n, all) => <p class="m-0">{n === 0 && '“'}{para}{n === all.length - 1 && '”'}</p>)}
+                  </div>
+                </>
+              ) : (
+                r.quote.split('\n').map((para, n, all) => <p class="m-0">{n === 0 && '“'}{para}{n === all.length - 1 && '”'}</p>)
+              )}
+            </blockquote>
+            {r.excerpt && (
+              <button type="button" class="text-[15px] font-bold text-teal bg-transparent border-0 p-0 cursor-pointer font-[inherit] hover:underline" aria-expanded="false" data-expand>Read full review</button>
+            )}
             <figcaption class="text-[15px] text-body-muted"><b class="text-ink">{r.name}</b>{r.when && ` · ${r.when}`} · Google review</figcaption>
           </figure>
         ))}

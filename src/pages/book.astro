@@ -1,0 +1,173 @@
+---
+import Base from '../layouts/Base.astro';
+import { services, groups } from '../config/booking';
+import { site } from '../config/site';
+
+const byGroup = groups
+  .map((g) => ({ group: g, items: services.filter((s) => s.group === g) }))
+  .filter((g) => g.items.length > 0);
+const steps = ['Service', 'Date & time', 'Your info', 'Payment', 'Confirmed'];
+const field = 'font-[inherit] text-base px-4 py-3 rounded-[10px] border border-input-border min-h-12 w-full bg-white text-ink aria-[invalid=true]:border-[#C53030]';
+---
+<Base
+  title="Book a Review (Preview) | NP Certification Academy"
+  description="Schedule your NP Certification Academy review, mentorship session or course."
+  noindex
+>
+  <div class="bg-[#FFF6E5] border-b border-[#F5D9A0] px-6 py-3 text-sm text-ink" role="note">
+    <div class="max-w-[1100px] mx-auto flex gap-2 items-start">
+      <svg class="shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7791F" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span><b>Booking preview.</b> Availability is sample data and nothing is booked, saved or charged. To book now, call <a href={`tel:${site.phone.tel}`} class="font-bold">{site.phone.display}</a>.</span>
+    </div>
+  </div>
+
+  <section class="bg-surface px-4 sm:px-6 py-8 md:py-12 min-h-[70vh]" data-booking>
+    <script type="application/json" data-services set:html={JSON.stringify(services)} />
+
+    <div class="max-w-[1100px] mx-auto flex flex-col gap-6">
+      <h1 class="m-0 text-[clamp(28px,3.4vw,38px)] leading-[1.15] font-extrabold">Book your review</h1>
+
+      <!-- Stepper -->
+      <ol class="flex gap-1 sm:gap-2 list-none m-0 p-0 text-[13px] sm:text-sm font-semibold" aria-label="Booking steps">
+        {steps.map((s, i) => (
+          <li class="flex-1 min-w-0 flex flex-col gap-1.5 group" data-step-indicator={i}>
+            <span class="h-1.5 rounded-full bg-card-border group-data-[state=done]:bg-teal group-data-[state=current]:bg-teal"></span>
+            <span class="truncate text-fine-print group-data-[state=current]:text-ink group-data-[state=done]:text-teal-dark"><span class="sm:hidden">{i + 1}</span><span class="hidden sm:inline">{i + 1}. {s}</span></span>
+          </li>
+        ))}
+      </ol>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-6 items-start">
+        <!-- Main panel -->
+        <div class="min-w-0 bg-white rounded-2xl border border-card-border p-5 sm:p-8 outline-none" data-panel tabindex="-1">
+
+          <!-- Step 1: service -->
+          <div data-step="0">
+            <h2 class="m-0 mb-1 text-[22px] font-extrabold">Select a service</h2>
+            <p class="m-0 mb-6 text-[15px] text-body-muted">Choose the review, course or session you'd like to book.</p>
+            <div class="flex flex-col gap-6">
+              {byGroup.map((g) => (
+                <details class="group/cat border-b border-divider pb-4" open>
+                  <summary class="flex justify-between items-center gap-3 text-sm font-bold uppercase tracking-[0.06em] text-teal-dark py-1">
+                    {g.group}
+                    <svg class="transition-transform group-open/cat:rotate-180" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                  </summary>
+                  <ul class="list-none m-0 mt-3 p-0 flex flex-col gap-2">
+                    {g.items.map((s) => (
+                      <li class="flex flex-wrap gap-x-4 gap-y-2 items-center justify-between rounded-xl border border-divider px-4 py-3.5 hover:border-teal">
+                        <div class="min-w-0">
+                          <b class="block text-base">{s.name}</b>
+                          <span class="text-sm text-body-muted">{s.duration}{s.price && <> · <b class="text-ink">{s.price}{s.priceSuffix}</b></>}</span>
+                        </div>
+                        <button type="button" class="btn btn-primary text-[15px] min-h-11 px-5 border-0 cursor-pointer font-[inherit]" data-select-service={s.key}>Book</button>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <!-- Step 2: date & time -->
+          <div data-step="1" hidden>
+            <button type="button" class="mb-4 inline-flex items-center gap-1 text-sm font-bold text-teal bg-transparent border-0 p-0 cursor-pointer font-[inherit]" data-back>← Back</button>
+            <h2 class="m-0 mb-1 text-[22px] font-extrabold" data-date-heading>Select a date &amp; time</h2>
+            <p class="m-0 mb-6 text-[15px] text-body-muted">Times shown in Eastern Time (ET).</p>
+            <div class="flex flex-wrap gap-8">
+              <div class="flex-[1_1_300px] min-w-0">
+                <div class="flex items-center justify-between mb-3">
+                  <button type="button" class="size-11 inline-flex items-center justify-center rounded-full border border-card-border bg-white cursor-pointer disabled:opacity-30 disabled:cursor-default" aria-label="Previous month" data-month-prev>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                  </button>
+                  <b class="text-lg" data-month-label aria-live="polite"></b>
+                  <button type="button" class="size-11 inline-flex items-center justify-center rounded-full border border-card-border bg-white cursor-pointer disabled:opacity-30 disabled:cursor-default" aria-label="Next month" data-month-next>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                  </button>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-fine-print mb-1" aria-hidden="true">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => <span>{d}</span>)}
+                </div>
+                <div class="grid grid-cols-7 gap-1" role="grid" data-calendar></div>
+              </div>
+              <div class="flex-[1_1_220px] min-w-0">
+                <p class="m-0 mb-3 font-bold" data-times-label>Select a date to see times.</p>
+                <div class="flex flex-col gap-2" data-times></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: your info -->
+          <div data-step="2" hidden>
+            <button type="button" class="mb-4 inline-flex items-center gap-1 text-sm font-bold text-teal bg-transparent border-0 p-0 cursor-pointer font-[inherit]" data-back>← Back</button>
+            <h2 class="m-0 mb-6 text-[22px] font-extrabold">Your information</h2>
+            <form class="grid grid-cols-1 sm:grid-cols-2 gap-4" novalidate data-info-form>
+              <label class="flex flex-col gap-1.5 text-sm font-semibold">First name<input class={field} name="firstName" autocomplete="given-name" required /></label>
+              <label class="flex flex-col gap-1.5 text-sm font-semibold">Last name<input class={field} name="lastName" autocomplete="family-name" required /></label>
+              <label class="flex flex-col gap-1.5 text-sm font-semibold">Phone<input class={field} name="phone" type="tel" autocomplete="tel" required /></label>
+              <label class="flex flex-col gap-1.5 text-sm font-semibold">Email<input class={field} name="email" type="email" autocomplete="email" required /></label>
+              <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4" data-intake></div>
+              <p class="sm:col-span-2 m-0 text-[13px] text-[#C53030] font-medium" data-info-error role="alert"></p>
+              <div class="sm:col-span-2">
+                <button type="submit" class="btn btn-primary text-base min-h-12 px-7 border-0 cursor-pointer font-[inherit]">Continue</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 4: payment (visual only — inputs are disabled) -->
+          <div data-step="3" hidden>
+            <button type="button" class="mb-4 inline-flex items-center gap-1 text-sm font-bold text-teal bg-transparent border-0 p-0 cursor-pointer font-[inherit]" data-back>← Back</button>
+            <h2 class="m-0 mb-1 text-[22px] font-extrabold">Payment</h2>
+            <p class="m-0 mb-6 text-[15px] text-body-muted" data-payment-note></p>
+            <div class="rounded-xl border border-dashed border-input-border bg-surface p-5 flex flex-col gap-4" aria-describedby="pay-preview">
+              <p id="pay-preview" class="m-0 text-sm font-semibold text-fine-print">Card entry is turned off in this preview.</p>
+              <div class="flex flex-col gap-1.5 text-sm font-semibold text-fine-print">Card number<div class={field + ' bg-white/60 text-fine-print'} aria-hidden="true">•••• •••• •••• ••••</div></div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5 text-sm font-semibold text-fine-print">Expiry<div class={field + ' bg-white/60 text-fine-print'} aria-hidden="true">MM / YY</div></div>
+                <div class="flex flex-col gap-1.5 text-sm font-semibold text-fine-print">CVC<div class={field + ' bg-white/60 text-fine-print'} aria-hidden="true">•••</div></div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary text-base min-h-12 px-7 mt-6 border-0 cursor-pointer font-[inherit]" data-pay></button>
+          </div>
+
+          <!-- Step 5: confirmation -->
+          <div data-step="4" hidden>
+            <div class="flex flex-col items-start gap-4">
+              <span class="size-14 rounded-full bg-teal-tint flex items-center justify-center">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0E6E6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <h2 class="m-0 text-[26px] font-extrabold" data-confirm-heading>You're scheduled!</h2>
+              <p class="m-0 text-base text-body-muted" data-confirm-text></p>
+              <p class="m-0 text-sm text-fine-print">Preview only — this booking was not saved and no confirmation email will be sent.</p>
+              <div class="flex flex-wrap gap-3 mt-2">
+                <button type="button" class="btn btn-secondary text-base border-0 cursor-pointer font-[inherit]" data-ics>Add to calendar</button>
+                <button type="button" class="btn btn-primary text-base border-0 cursor-pointer font-[inherit]" data-restart>Book something else</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <aside class="order-first lg:order-none min-w-0 lg:sticky lg:top-28 bg-white rounded-2xl border border-card-border p-6 flex flex-col gap-4" aria-label="Booking summary" hidden data-summary>
+          <div class="flex items-center gap-3">
+            <span class="shrink-0 size-10 rounded-[10px] bg-teal text-white flex items-center justify-center font-extrabold" aria-hidden="true">NP</span>
+            <span class="text-sm font-semibold text-body-muted">{site.name}</span>
+          </div>
+          <div>
+            <b class="block text-lg leading-snug" data-sum-name></b>
+            <span class="text-sm text-body-muted" data-sum-duration></span>
+          </div>
+          <dl class="m-0 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[15px] border-t border-divider pt-4">
+            <dt class="text-fine-print">Price</dt><dd class="m-0 font-bold" data-sum-price></dd>
+            <dt class="text-fine-print" data-sum-when-label>When</dt><dd class="m-0" data-sum-when>—</dd>
+            <dt class="text-fine-print">Where</dt><dd class="m-0">Live on Zoom</dd>
+          </dl>
+          <button type="button" class="self-start text-sm font-bold text-teal bg-transparent border-0 p-0 cursor-pointer font-[inherit]" data-change-service>Change service</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import '../scripts/booking';
+  </script>
+</Base>

@@ -56,11 +56,51 @@ export const stats = {
 export const googleReviews = {
   count: 521,
   /** Average star rating as shown on Google, e.g. '4.9'. Shown with the count when set. */
-  rating: null as string | null,
+  rating: '5.0' as string | null,
   /** Public link to the Google reviews (Business Profile → Share → reviews link). */
-  url: null as string | null,
+  url: 'https://www.google.com/search?q=np+certification+academy#lrd=0x89b64115bf51dcd3:0xbac9d72f1ad98934,1,,,,' as string | null,
   /** Only 5-star reviews — the carousel header shows five stars. */
-  items: [] as { quote: string; name: string; when?: string }[],
+  items: [
+    {
+      name: 'Joy I.',
+      excerpt: 'I highly recommend Dr. Kehinde’s PMHNP board review course to anyone preparing for the certification exam. The content was clear, organized, and focused on important exam topics.',
+      quote: `I highly recommend Dr. Kehinde’s PMHNP board review course to anyone preparing for the certification exam.
+The content was clear, organized, and focused on important exam topics. Dr. Kehinde was also supportive, encouraging, and genuinely invested in helping her students succeed.
+This course was definitely worth it, and I am very grateful for all the guidance and resources provided.`,
+    },
+    {
+      name: 'Christine X.',
+      excerpt: 'Dr Elisha K’s review has been amazing. I like how it provides a more structural learning with biweekly class and canvas with recommended plans for studying.',
+      quote: `Dr Elisha K’s review has been amazing. I like how it provides a more structural learning with biweekly class and canvas with recommended plans for studying. I do not come from a psych background so having that extra support is crucial, especially when trying to prepare myself for future practice. I also really appreciate the extras given each week from LMR to TOAD. Highly recommend!`,
+    },
+    {
+      name: 'Carine N.',
+      excerpt: 'Dr. K’s NPcertified class was incredibly helpful in preparing for the PMHNP board exam. Her teaching style is unique. She breaks down complex psychiatric concepts and connects them to everyday life, making them easier to understand and retain.',
+      quote: `Dr. K’s NPcertified class was incredibly helpful in preparing for the PMHNP board exam. Her teaching style is unique. She breaks down complex psychiatric concepts and connects them to everyday life, making them easier to understand and retain.
+The 6-week system is very effective because you go through each domain twice. If something doesn’t click the first time, the repetition ensures it makes sense the second time.
+Her LMR review sessions are interactive and engaging, especially with the focus on timing training you to read and answer questions within one minute. That strategy was extremely helpful during my actual board exam and helped me stay mindful of my time.
+If you’re preparing for your PMHNP boards and want a structured, supportive, and effective approach, I highly recommend reaching out to Dr. K. At NP certification Academy.
+You won’t regret it!`,
+    },
+    {
+      name: 'Lissette W.',
+      excerpt: 'Dr. K’s program is an excellent resource for anyone preparing for the ANCC exam. The material is comprehensive, well-organized, and up to date, making it easier to understand and retain key concepts.',
+      quote: `Dr. K’s program is an excellent resource for anyone preparing for the ANCC exam. The material is comprehensive, well-organized, and up to date, making it easier to understand and retain key concepts. The content is presented in a clear and practical way, which helps bridge the gap between theory and real-world clinical application.
+What I appreciated most is how focused the program is on what you truly need to know to succeed on the exam. It streamlines complex information and highlights high-yield topics, allowing you to study efficiently without feeling overwhelmed. The teaching style is engaging and supportive, which helps build both confidence and competence.
+Overall, I highly recommend studying with Dr. K. This program provides the structure, clarity, and guidance needed to feel well-prepared and confident going into the ANCC exam.`,
+    },
+    {
+      name: 'Derick M.',
+      quote: `Dr. K effectively elucidated the fundamentals of the PMHNP exam. The class ensured that all participants were adequately prepared. I am delighted to have been a part of the PMHNP review class, as it provided me with valuable insights and knowledge.`,
+    },
+  ] as {
+    /** Full review, word for word. Line breaks become paragraphs. */
+    quote: string;
+    /** Optional verbatim opening shown in the carousel, with "Read full review" to expand. */
+    excerpt?: string;
+    name: string;
+    when?: string;
+  }[],
 };
 
 /** Photos: put files in /public/images and set the path. Missing → monogram panel. */
@@ -83,6 +123,8 @@ export const routes = {
   books: '/books',
   summit: '/summit-2026',
   login: '/login',
+  confidentPrescriber: '/confident-prescriber',
+  book: '/book',
 } as const;
 
 export type NavKey = 'home' | 'pmhnp' | 'fnp' | 'agacnp' | 'nclex' | 'lmr' | 'qbank' | 'schedule' | 'other';
@@ -110,7 +152,7 @@ export const links = {
   freeTrialFnp: 'https://www.signupgenius.com/go/10C0D4AA9AE29A0F4C52-62916546-free',
   sampleLecture: 'https://youtu.be/P4uZ6i2M938',
   whatsapp: 'https://chat.whatsapp.com/IJlEPutKiRHA3b7hVrrb24',
-  confidentPrescriber: 'https://www.confidentprescriber.com/',
+  confidentPrescriber: '/confident-prescriber',
 };
 
 export const social = [

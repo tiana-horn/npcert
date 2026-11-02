@@ -1,8 +1,11 @@
 /**
  * Every price and booking/checkout URL on the site lives here.
  *
- * Prices and URLs were taken from the current Wix site (Nov 2026) — CONFIRM with the owner before launch.
+ * Prices and URLs were taken from the current Wix sites (Nov 2026) — CONFIRM with the owner before launch.
  * `price: null` hides the price; `href: null` turns the button into "Call to book".
+ *
+ * Acuity links are rewritten to the in-house booking preview (`/book?service=<key>`, see
+ * src/config/booking.ts). The original Acuity URL is kept as `legacyHref` for reference.
  */
 
 const ACUITY = 'https://app.acuityscheduling.com/schedule.php?owner=23270809&appointmentType=';
@@ -15,11 +18,13 @@ export type Product = {
   /** Shown after the price, e.g. " /month". */
   priceSuffix?: string;
   href: string | null;
+  /** The Acuity URL this product used to book through. */
+  legacyHref?: string;
 };
 
 const p = (name: string, price: string | null, href: string | null, priceSuffix?: string): Product => ({ name, price, href, priceSuffix });
 
-export const catalog = {
+const raw = {
   // PMHNP — the current site books ANCC and AANP through separate Acuity categories.
   pmhnpCrashAncc: p('PMHNP Crash Course (ANCC)', '$275', `${ACUITY}72080101`),
   pmhnpCrashAanp: p('PMHNP Crash Course (AANP)', '$275', acuityCategory('AANP Crash course by Dr. K')),
@@ -47,8 +52,8 @@ export const catalog = {
   nclexSelfPaced: p('NCLEX Self-Paced Crash Course', '$499', acuityCategory('A Self-Paced NCLEX Review (RN/PN)')),
   nclexUpgrade: p('NCLEX Upgrade', '$399', acuityCategory('A NCLEX Review  Upgrade Package (For Students with Expired 6-Week Review) | 3-Week Extension | 2 Classes per Week | Content Reinforcement, LMR, Exam Strategy Review & Question Breakdown | Current or Returning Students Only')),
   ccrn: p('CCRN review', '$599', acuityCategory('CCRN Exam Review')),
-  /** The current site links this to the CCRN booking page by mistake — needs its own link. */
-  pmhRn: p('ANCC PMH-RN review', '$599', null),
+  /** The current site links this to the CCRN booking page by mistake; it gets its own booking here. */
+  pmhRn: p('ANCC PMH-RN review', '$599', 'acuity:pending'),
   nurseExecutive: p('Nurse Executive review', '$795', null),
 
   // Question banks (Stripe). Prices per bank aren't on the current site; "from $69" is.
@@ -63,9 +68,32 @@ export const catalog = {
   bridge: p('Bridge & Mentorship Program', '$599', acuityForm('BRIDGE PROGRAM for students that passed their boards')),
   growth: p('Clinician Growth Package', '$199', acuityForm('CLINICIANS GROWTH PACKAGE')),
 
+  // Confident Prescriber (from confidentprescriber.com)
+  cpBridgeClinic: p('Bridge, Mentorship + Clinic Biz', '$699', acuityCategory('BRIDGE PROGRAM for students that passed their boards')),
+  cpGrowth: p("Clinician's Growth Package", '$199', acuityCategory('CLINICIANS GROWTH PACKAGE')),
+  cpClinicStartup: p('NP Clinic Start-Up & Growth Guide', '$250', acuityCategory('BRIDGE PROGRAM for students that passed their boards')),
+  cpRealTimeCollab: p('Real-Time Collab', '$30', acuityCategory('CLINICIANS GROWTH PACKAGE'), ' /session'),
+  cpCareerCoaching: p('Career & Business Coaching', '$250', acuityCategory('CERTIFIED EXPERT REVIEW OR NEW PRESCRIBERS REVIEW(CER)'), ' /hour'),
+  cpPsychopathology: p('Psychopathology (DSM-5-TR) Mastery', '$150', acuityCategory('CERTIFIED EXPERT REVIEW OR NEW PRESCRIBERS REVIEW(CER)')),
+  cpPsychopharm: p('Psychopharmacology Mastery', '$150', acuityCategory('CERTIFIED EXPERT REVIEW OR NEW PRESCRIBERS REVIEW(CER)')),
+  cpPsychAssessment: p('Psychiatric Assessment', '$150', acuityCategory('CERTIFIED EXPERT REVIEW OR NEW PRESCRIBERS REVIEW(CER)')),
+  cpClinicalPsychotherapy: p('Clinical Psychotherapy', null, 'acuity:pending'),
+  cpClinicalSim: p('Psychotherapy Clinical Simulation', null, 'acuity:pending'),
+
   // Summit
   summitInPerson: p('Summit in-person pass', null, 'https://buy.stripe.com/8x2eVea6dbJw9W27jA2Fa0i'),
   summitVirtual: p('Summit virtual pass', null, 'https://buy.stripe.com/14AcN6a6dfZM0lscDU2Fa0k'),
 } as const;
 
-export type CatalogKey = { [K in keyof typeof catalog]: (typeof catalog)[K] extends Product ? K : never }[keyof typeof catalog];
+const isAcuity = (href: string | null) => !!href && (href.startsWith('https://app.acuityscheduling.com') || href === 'acuity:pending');
+
+/** Rewrites every Acuity product to the in-house booking flow, keeping the old URL for reference. */
+export const catalog = Object.fromEntries(
+  Object.entries(raw).map(([key, v]) =>
+    typeof v === 'object' && isAcuity(v.href)
+      ? [key, { ...v, href: `/book?service=${key}`, ...(v.href!.startsWith('https') && { legacyHref: v.href }) }]
+      : [key, v],
+  ),
+) as typeof raw;
+
+export type CatalogKey = { [K in keyof typeof raw]: (typeof raw)[K] extends Product ? K : never }[keyof typeof raw];

@@ -1,0 +1,252 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import PlanCard from '../components/PlanCard.astro';
+import BookButton from '../components/BookButton.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { catalog as c, type Product } from '../config/catalog';
+import { routes, site } from '../config/site';
+import { courseSchema } from '../config/schema';
+
+/**
+ * Rebuild of confidentprescriber.com (Nov 2026 content). Where the old site repeated
+ * another course's description by mistake (Psychiatric Assessment, Career & Business
+ * Coaching), only the facts that are clearly that course's own are shown.
+ */
+const description =
+  'Confident Prescriber by Dr. Kehinde Elisha: bridge and mentorship programs, clinic start-up support, real-time case collaboration and self-paced psychopharmacology and psychopathology courses for new nurse practitioners.';
+
+/** Confident Prescriber's own inbox, from the current site. CONFIRM with the owner. */
+const cpEmail = 'confidentprescriber@gmail.com';
+
+const support: { product: Product; meta: string; bullets: string[]; cta: string }[] = [
+  {
+    product: c.cpClinicStartup,
+    meta: '2 days live · starts the last Friday of every month',
+    bullets: [
+      'Step-by-step clinic start-up guidance',
+      'Licensing, credentialing and compliance support',
+      'EMR, billing and operational setup',
+      'Marketing, branding and patient growth strategies',
+      'Policies, templates and business resources included',
+      'Checklist for opening-day readiness',
+    ],
+    cta: 'Book the start-up guide',
+  },
+  {
+    product: c.cpRealTimeCollab,
+    meta: 'Every Monday, 10 AM – 12 PM ET',
+    bullets: [
+      'Real-time provider collaboration and case discussions',
+      'Live clinical guidance and decision support',
+      'Evidence-based recommendations for complex cases',
+      'Support for diagnosis, treatment and care planning',
+      'Direct access to experienced clinicians',
+    ],
+    cta: 'Join a session',
+  },
+  {
+    product: c.cpCareerCoaching,
+    meta: 'One-on-one with Dr. K',
+    bullets: [],
+    cta: 'Book coaching',
+  },
+];
+
+const mastery: { product: Product; text?: string; bullets?: string[] }[] = [
+  {
+    product: c.cpPsychopathology,
+    text: 'Basics to advanced, self-paced.',
+    bullets: [
+      'The main diagnostic categories — neurodevelopmental, psychotic, bipolar, depressive, anxiety, OCD-related, trauma and more',
+      'The general flow from childhood to adulthood to neurocognitive',
+      'Differential diagnosis and common overlaps',
+      'Clinical case studies',
+    ],
+  },
+  {
+    product: c.cpPsychopharm,
+    text: 'Foundations, self-paced.',
+    bullets: [
+      'Neurotransmitters: serotonin, dopamine, norepinephrine, GABA, glutamate, acetylcholine',
+      'Receptor theory: agonist, antagonist, partial agonist',
+      'Pharmacokinetics: absorption, metabolism (CYP450), elimination',
+      'Medication titration and how to prescribe',
+    ],
+  },
+  { product: c.cpPsychAssessment, text: 'Basics to advanced, self-paced.' },
+];
+
+const masterClasses = [
+  {
+    product: c.cpClinicalPsychotherapy,
+    summary:
+      'A practice-oriented course on applying psychotherapy in real clinical settings — how providers assess, conceptualize and treat patients using evidence-based psychotherapy while maintaining safety, ethics and clinical effectiveness.',
+    audience: ['PMHNP students and practicing providers', 'Psychiatric and primary care NPs providing therapy', 'Licensed therapists seeking structured clinical refinement', 'Clinicians moving from medication-focused roles to psychotherapy'],
+    outcomes: [
+      'Conduct structured, goal-oriented psychotherapy sessions',
+      'Establish and maintain an effective therapeutic alliance',
+      'Perform clinical case conceptualization beyond diagnosis',
+      'Apply evidence-based psychotherapeutic modalities appropriately',
+      'Manage resistance and emotional dysregulation',
+      'Integrate psychotherapy with pharmacologic treatment when indicated',
+      'Document psychotherapy accurately and defensibly',
+    ],
+  },
+  {
+    product: c.cpClinicalSim,
+    summary:
+      'Real-world therapy training through structured clinical scenarios. Using simulated patient cases, you practice assessment, therapeutic communication, intervention selection and clinical decision-making — moving from knowing what therapy is to knowing what to say and do in session.',
+    audience: ['PMHNP students preparing for clinicals or boards', 'New PMHNPs transitioning into psychotherapy practice', 'Practicing NPs strengthening therapy confidence', 'Providers who want hands-on, scenario-based learning'],
+    outcomes: [
+      'Run psychotherapy sessions with a structured clinical flow',
+      'Respond to patient statements in real time',
+      'Apply CBT, DBT, MI, supportive and trauma-informed techniques in context',
+      'Manage emotional intensity, silence, resistance and risk',
+      'Show clinical judgment in complex scenarios',
+      'Document psychotherapy encounters accurately',
+    ],
+  },
+];
+---
+<Base
+  title="Confident Prescriber — Mentorship & Courses for New NPs | NP Certification Academy"
+  description={description}
+  crumb="Confident Prescriber"
+  schema={[courseSchema('Confident Prescriber Bridge & Mentorship', description, routes.confidentPrescriber, [c.cpBridgeClinic, c.cpGrowth])]}
+>
+  <PageHero
+    dark
+    crumb="Confident Prescriber"
+    title="Prescribe with confidence. Lead with knowledge. Thrive in practice."
+    sub="Passed your boards? Confident Prescriber is Dr. Kehinde Elisha's mentorship program for new clinicians — built to help you prescribe safely, find your footing in your first role, and grow your own practice."
+    ctas={[
+      { label: 'See programs', href: '#programs', variant: 'primary' },
+      { label: `Call or text ${site.phone.display}`, href: `tel:${site.phone.tel}`, variant: 'ghost' },
+    ]}
+    location="cp_hero"
+  >
+    <span slot="eyebrow" class="eyebrow !text-amber">Confident Prescriber · by Dr. Kehinde Elisha</span>
+    <div slot="aside" class="bg-white text-ink rounded-[20px] p-7 flex flex-col gap-4">
+      <span class="text-[13px] font-bold text-teal-dark uppercase tracking-[0.06em]">For new NPs who've passed their boards</span>
+      <ul class="m-0 p-0 list-none flex flex-col gap-3 text-[15px]">
+        {['Weekly live mentorship on Zoom', 'Assessment, diagnosis, psychotherapy & pharm', 'Clinic start-up and business support', 'Up to 25 CEUs'].map((t) => (
+          <li class="flex gap-2.5 items-start">
+            <svg class="shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E6E6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>{t}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </PageHero>
+
+  <!-- Bridge & mentorship -->
+  <section id="programs" class="section-y-80 px-6 scroll-mt-24">
+    <div class="max-w-[1000px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="Bridge & mentorship" title="Hit the ground running in your first role" />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+        <PlanCard
+          product={c.cpBridgeClinic}
+          meta="6 months live · every Tue 6 PM or Sat 4:30 PM ET"
+          bullets={[
+            'Intensive, slow-paced training for new hires',
+            'Assessment, diagnosis, psychotherapy and pharm',
+            'Ready to contribute in your first week on the job',
+            'Tools to start your own practice',
+            '<b>25 CEUs</b>',
+          ]}
+          cta="Join the Bridge Program"
+          featured
+          badge=""
+          location="cp_programs"
+        />
+        <PlanCard
+          product={c.cpGrowth}
+          meta="3 months · every Tue 7:45 – 9 PM ET"
+          bullets={['Proficiency in assessment', 'Proficiency in diagnosis', 'Proficiency in implementation (psychopharmacology)', 'Course starts over every 3 months', '<b>20 CEUs</b>']}
+          cta="Start Growth Package"
+          location="cp_programs"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Practice & business support -->
+  <section class="bg-surface section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="Practice & business" title="Support beyond the classroom" />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+        {support.map((s) => (
+          <PlanCard product={s.product} meta={s.meta} bullets={s.bullets} cta={s.cta} size="md" location="cp_support" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Self-paced mastery -->
+  <section class="bg-ink text-white section-y-80 px-6 on-dark">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead dark eyebrow="Self-paced · 1 week with work slides · 10 CEUs each" title="Diagnosis and psychopharmacology mastery" />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-5">
+        {mastery.map((m) => (
+          <div class="border border-footer-rule rounded-[18px] p-[26px] flex flex-col gap-3">
+            <h3 class="m-0 text-[19px] font-bold">{m.product.name}</h3>
+            {m.product.price && <span class="text-[28px] font-extrabold text-amber">{m.product.price}</span>}
+            {m.text && <span class="text-[15px] text-muted-on-dark">{m.text}</span>}
+            {m.bullets && <ul class="m-0 pl-5 text-[15px] leading-relaxed text-muted-on-dark flex flex-col gap-1.5">{m.bullets.map((b) => <li>{b}</li>)}</ul>}
+            <span class="grow"></span>
+            <BookButton product={m.product} label="Enroll" variant="link" location="cp_mastery" class="!text-amber" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Psychotherapy master classes -->
+  <section class="section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+      <SectionHead eyebrow="Psychotherapy master classes" title="From therapy concepts to confident sessions" />
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] gap-5">
+        {masterClasses.map((m) => (
+          <div class="border border-card-border rounded-[18px] p-[30px] flex flex-col gap-4">
+            <h3 class="m-0 text-xl font-extrabold">{m.product.name}</h3>
+            <p class="m-0 text-[15px] leading-relaxed text-body-muted">{m.summary}</p>
+            <details class="group border-t border-divider pt-4">
+              <summary class="flex justify-between items-center gap-3 font-bold text-[15px]">
+                Who it's for &amp; what you'll learn
+                <svg class="shrink-0 transition-transform group-open:rotate-180" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E6E6B" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="mt-4 flex flex-col gap-4 text-[15px] text-body-muted">
+                <div><b class="text-ink">Who it's for</b><ul class="m-0 mt-1.5 pl-5 leading-relaxed">{m.audience.map((a) => <li>{a}</li>)}</ul></div>
+                <div><b class="text-ink">By the end, you'll be able to</b><ul class="m-0 mt-1.5 pl-5 leading-relaxed">{m.outcomes.map((o) => <li>{o}</li>)}</ul></div>
+              </div>
+            </details>
+            <span class="grow"></span>
+            <BookButton product={m.product} label="Request a seat" variant="secondary" location="cp_masterclass" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="bg-surface section-y-80 px-6">
+    <div class="max-w-[1200px] mx-auto flex flex-wrap gap-10 items-center justify-between">
+      <div class="flex-[1_1_420px] min-w-0 flex flex-col gap-3">
+        <h2 class="m-0 text-[clamp(26px,3vw,34px)] font-extrabold">Questions about a program?</h2>
+        <p class="m-0 text-[17px] text-body-muted">Call, text or WhatsApp Dr. K's team — we reply within 48 hours.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href={`tel:${site.phone.tel}`} class="btn btn-dark text-base min-h-12 px-[22px]" data-track="tel_click" data-location="cp_contact">Call {site.phone.display}</a>
+        <a href={`mailto:${cpEmail}`} class="btn btn-secondary text-base min-h-12 px-[22px]">Email us</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Still preparing for your boards?"
+    text="NP Certification Academy's live reviews for PMHNP, FNP/AGNP, AGACNP and NCLEX."
+    cta={{ label: 'Choose your exam', href: '/#exams' }}
+    location="cp_cta"
+  />
+</Base>

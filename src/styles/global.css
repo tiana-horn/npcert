@@ -44,6 +44,9 @@
   a { @apply text-teal; }
   a:hover { @apply text-ink; }
   :focus-visible { outline: 2px solid var(--color-teal); outline-offset: 2px; }
+  /* Long clinical words (e.g. "psychopharmacology") must not overflow small phones. */
+  h1, h2, h3 { overflow-wrap: break-word; }
+  @media (width < 400px) { h1, h2, h3 { hyphens: auto; } }
   .on-dark :focus-visible { outline-color: var(--color-amber); }
   details summary { cursor: pointer; list-style: none; }
   details summary::-webkit-details-marker { display: none; }

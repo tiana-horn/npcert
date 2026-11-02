@@ -10,6 +10,8 @@ Design source and requirements: [`reference/`](reference/) — `CLAUDE_CODE_HAND
 | `/pmhnp`, `/fnp-agnp`, `/agacnp`, `/nclex-and-certifications` | Exam tracks |
 | `/last-minute-review`, `/question-banks`, `/schedule` | |
 | `/mentorship-ceus`, `/books`, `/summit-2026`, `/login` | |
+| `/confident-prescriber` | Rebuild of confidentprescriber.com |
+| `/book` | In-house booking **preview** (replaces Acuity links; see below) |
 
 ## Commands
 
@@ -37,6 +39,14 @@ Anything set to `null` (or an empty list) is hidden on the page — placeholder 
 - hero copy (A/B test slot) and every outbound link
 
 Items marked `CONFIRM` in that file were taken from the current Wix site and need the owner's sign-off.
+
+## Booking preview (`/book`)
+
+Every booking button that used to go to Acuity now opens `/book?service=<key>`, which walks through Acuity's steps — service → date & time → your info → payment → confirmation. It's **visual only**, for client review: availability is sample data (except the real AGACNP, Bridge, Growth and Real-Time Collab times), nothing is stored, card fields are disabled, and a banner says so. The page is `noindex` and left out of the sitemap.
+
+- Services, categories, durations, schedules and intake questions: [`src/config/booking.ts`](src/config/booking.ts)
+- The original Acuity URL for each product is kept as `legacyHref` in `catalog.ts`
+- Stripe checkouts (FNP/AGNP Self-Paced, question banks, summit passes) are unchanged
 
 ## Free-trial form
 
